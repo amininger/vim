@@ -1,0 +1,48 @@
+" Toggles syntax hilighting
+function! ToggleSyntax()
+	if exists("g:syntax_on")
+		syntax off
+	else
+		syntax enable
+	endif
+endfunction
+
+nmap <silent> ;s :call ToggleSyntax()<CR>
+
+" Capitalize line, center and move to the next line
+function! CapitalizeCenterAndMoveDown()
+	s/\<./\u&/g
+	center
+	+1
+endfunction
+
+nmap <silent> \c :call CapitalizeCenterAndMoveDown()<CR>
+
+
+highlight STANDOUT term=bold cterm=bold gui=bold
+let s:words = [ "it's", "its", "your", "you're", "there", "their", "they're" ]
+
+let s:words_matcher = 'match STANDOUT /\c\<\(' . join(s:words, '\|') . '\)\>/'
+
+function! WordCheck()
+	let w:check_words = exists('w:check_words') ? !w:check_words : 1
+
+	if w:check_words
+		exec s:words_matcher
+	else
+		match none
+	endif
+endfunction
+
+nmap <silent> ;p :call WordCheck()<CR>
+
+function! OpenFileUnderCursorInUpperWindow()
+	let mycurf=expand("<cfile>")
+	wincmd k
+	execute("e ".mycurf)
+endfunction
+
+nmap <silent> ;n :call OpenFileUnderCursorInUpperWindow()<CR>
+
+
+
