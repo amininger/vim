@@ -7,6 +7,8 @@ filetype plugin indent on
 
 syntax on
 
+
+set noexpandtab
 set tabstop=2
 set shiftwidth=2
 set smarttab
@@ -28,8 +30,8 @@ nnoremap <C-M> :tabnext<Enter>
 " Use H and L to close/open folds
 set foldmethod=indent
 set foldlevelstart=20
-nnoremap H zc<Enter>
-nnoremap L zo<Enter>
+nnoremap H zc
+nnoremap L zo
 
 
 set hlsearch

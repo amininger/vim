@@ -36,13 +36,40 @@ endfunction
 
 nmap <silent> ;p :call WordCheck()<CR>
 
+function! GetEditCommandForFile()
+	let line_arr = split(getline('.'), "|")
+	let filename = line_arr[0]
+	let lineno = line_arr[1]
+	return "e +".lineno." ".filename
+endfunction
+	
 function! OpenFileUnderCursorInUpperWindow()
-	let mycurf=expand("<cfile>")
+	let editcmd=GetEditCommandForFile()
 	wincmd k
-	execute("e ".mycurf)
+	execute(editcmd)
 endfunction
 
 nmap <silent> ;n :call OpenFileUnderCursorInUpperWindow()<CR>
+
+function! OpenPrevFileInWindow()
+	wincmd j
+	execute "normal! k"
+	let editcmd=GetEditCommandForFile()
+	wincmd k
+	execute(editcmd)
+endfunction
+
+function! OpenNextFileInWindow()
+	wincmd j
+	execute "normal! j"
+	let editcmd=GetEditCommandForFile()
+	wincmd k
+	execute(editcmd)
+endfunction
+
+
+nnoremap <C-Up> :call OpenPrevFileInWindow()<CR>
+nnoremap <C-Down> :call OpenNextFileInWindow()<CR>
 
 
 
