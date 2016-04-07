@@ -1,24 +1,37 @@
 let &runtimepath.=','.$MY_VIM_DIR
 
-set nocompatible
-
-filetype plugin indent on
-:syntax on
-
 syntax on
 
+" ######### VUNDLE ########
 
-set noexpandtab
+set nocompatible
+filetype off
+
+set rtp+=$MY_VIM_DIR/bundle/Vundle.vim
+call vundle#begin()
+
+Plugin 'VundleVim/Vundle.vim'
+
+Plugin 'christoomey/vim-tmux-navigator'
+
+
+call vundle#end()
+
+filetype plugin indent on
+
+" ####### END VUNDLE #######
+
+set expandtab
 set tabstop=2
 set shiftwidth=2
 set smarttab
 set autoindent
 set backspace=indent,eol,start
 
-nnoremap <C-J> <C-W>j
-nnoremap <C-K> <C-W>k
-nnoremap <C-H> <C-W>h
-nnoremap <C-L> <C-W>l
+"nnoremap <C-J> <C-W>j
+"nnoremap <C-K> <C-W>k
+"nnoremap <C-H> <C-W>h
+"nnoremap <C-L> <C-W>l
 nnoremap <C-N> <C-W>n
 
 nnoremap <C-B> :tabnew<Enter>

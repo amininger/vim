@@ -67,9 +67,57 @@ function! OpenNextFileInWindow()
 	execute(editcmd)
 endfunction
 
+function! OpenFileInTmuxPane()
+  if getline('.') =~ '▸' || getline('.') =~ '▾'
+    " Done with directory, ignore
+    return
+  endif
+
+  let line_no = line('.')
+  let indent_level = indent(line_no)
+
+  if indent_level == 0
+    " Not a valid file
+    return
+  endif
+
+	let filename = getline('.')
+  let filename = substitute(filename, '^\s*\(.\{-}\)\s*$', '\1', '')
+
+  let dir = ""
+
+  while indent_level > 2 && line_no > 0
+    " Keep going up the file until we are out of the tree or at the top of the page
+    let line_no = line_no - 1
+    
+    if (getline(line_no) =~ '▾') && (indent(line_no) + 4 == indent_level)
+      " We are at an expanded directory at the proper indentation, add it to the dir
+      let folder = getline(line_no)
+      let folder = substitute(folder, '▾', '', '')
+      let folder = substitute(folder, '^\s*\(.\{-}\)\s*$', '\1', '')
+      let dir = folder.dir
+      let indent_level = indent_level - 2
+    endif
+  endwhile
+
+  let dir = expand('%:p:h')."/".dir
+
+  if line_no == 0
+    " We went all the way to the beginning, something went wrong
+    return
+  endif
+
+  let file = dir.filename
+  echom file
+
+  let opencmd=":silent !vim --servername tmux --remote-tab ".file
+  execute opencmd | redraw!
+endfunction
+
 
 nnoremap <C-Up> :call OpenPrevFileInWindow()<CR>
 nnoremap <C-Down> :call OpenNextFileInWindow()<CR>
 
+nnoremap <C-E> :call OpenFileInTmuxPane()<CR>
 
 
