@@ -238,10 +238,18 @@ function! DeleteFileUnderCursor()
   " Refresh the file"
   call feedkeys("kr")
 endfunction
-  
-let g:netrw_fastbrowse=0
 
 
 """"""""""""""""""" SOAR FUNCTIONS """""""""""""""""""
 
+function! AddRuleTemplateToFile(template_name)
+  let file = $MY_VIM_DIR."/rule_templates/".a:template_name
+  let cmd = "read ".file
+  echo cmd
+  execute cmd
+endfunction
 
+function! FindNextSVar()
+  execute "normal! gg/SVAR\<cr>"
+  call feedkeys("cw")
+endfunction

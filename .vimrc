@@ -61,6 +61,11 @@ command FO call OpenFileInTmuxPane()
 command -nargs=1 FC call CreateFileInCurrentDirectory(<f-args>)
 command FDEL call DeleteFileUnderCursor()
 
-let g:netrw_liststyle=3
+command PREF call AddRuleTemplateToFile("preference-rule.soar")
 
+nnoremap <C-F> :call FindNextSVar()<CR>
+inoremap <C-F> <ESC>:call FindNextSVar()<CR>
+
+let g:netrw_liststyle=3
+let g:netrw_fastbrowse=0
 "runtime indent/soar.vim
