@@ -1,40 +1,25 @@
-" Toggles syntax hilighting
-function! ToggleSyntax()
-	if exists("g:syntax_on")
-		syntax off
-	else
-		syntax enable
-	endif
+
+""""""""""""""""""" GENERAL FUNCTIONS """""""""""""""""""
+
+
+"""""
+" TrimString(str:string)
+"   Returns a copy of the string with whitespace 
+"   at the beginning and end of the string removed
+
+function! TrimString(str)
+  return substitute(a:str, '^\s*\(.\{-}\)\s*$', '\1', '')
 endfunction
 
-nmap <silent> ;s :call ToggleSyntax()<CR>
-
-" Capitalize line, center and move to the next line
-function! CapitalizeCenterAndMoveDown()
-	s/\<./\u&/g
-	center
-	+1
-endfunction
-
-nmap <silent> \c :call CapitalizeCenterAndMoveDown()<CR>
+""""""""""""""""""" OPENING GREPPED FILES """""""""""""""""""
+" These functions are for using grep inside vim and opening
+"   each file in a split pane above the :copen pane
 
 
-highlight STANDOUT term=bold cterm=bold gui=bold
-let s:words = [ "it's", "its", "your", "you're", "there", "their", "they're" ]
-
-let s:words_matcher = 'match STANDOUT /\c\<\(' . join(s:words, '\|') . '\)\>/'
-
-function! WordCheck()
-	let w:check_words = exists('w:check_words') ? !w:check_words : 1
-
-	if w:check_words
-		exec s:words_matcher
-	else
-		match none
-	endif
-endfunction
-
-nmap <silent> ;p :call WordCheck()<CR>
+"""""
+" GetEditCommandForFile()
+"   Returns a command to edit the file at the line number
+"   Specified in the current line in the :copen buffer
 
 function! GetEditCommandForFile()
 	let line_arr = split(getline('.'), "|")
@@ -43,13 +28,11 @@ function! GetEditCommandForFile()
 	return "e +".lineno." ".filename
 endfunction
 	
-function! OpenFileUnderCursorInUpperWindow()
-	let editcmd=GetEditCommandForFile()
-	wincmd k
-	execute(editcmd)
-endfunction
 
-nmap <silent> ;n :call OpenFileUnderCursorInUpperWindow()<CR>
+"""""
+" OpenPrevFileInWindow()
+"   Will move the cursor to the previous line in the copen buffer
+"   and open that file in the panel above this one
 
 function! OpenPrevFileInWindow()
 	wincmd j
@@ -59,6 +42,12 @@ function! OpenPrevFileInWindow()
 	execute(editcmd)
 endfunction
 
+
+"""""
+" OpenPrevFileInWindow()
+"   Will move the cursor to the next line in the copen buffer
+"   and open that file in the panel above this one
+
 function! OpenNextFileInWindow()
 	wincmd j
 	execute "normal! j"
@@ -67,57 +56,192 @@ function! OpenNextFileInWindow()
 	execute(editcmd)
 endfunction
 
-function! OpenFileInTmuxPane()
-  if getline('.') =~ '▸' || getline('.') =~ '▾'
-    " Done with directory, ignore
-    return
+""""""""""""""""""" FILE EXPLORER """""""""""""""""""
+" These functions are used within the file explorer
+"   To expand its functionality
+
+"""""
+" ExtractDirectoryName(line:string)
+"   Given a line in the file explorer buffer
+"   This will return the directory name
+"   (Whitespace and arrow symbols removed)
+
+function! ExtractDirectoryName(line)
+  return TrimString(substitute(a:line, '▾\|▸', '', ''))
+endfunction
+
+
+"""""
+" IsOpenDir(line:string)
+"   Given a line in the file explorer buffer
+"   Returns true if it represents an open directory
+
+function! IsOpenDir(line)
+  return (a:line =~ '▾')
+endfunction
+
+
+"""""
+" IsClosedDir(line:string)
+"   Given a line in the file explorer buffer
+"   Returns true if it represents a closed directory
+
+function! IsClosedDir(line)
+  return (a:line =~ '▸')
+endfunction
+
+
+"""""
+" IsDir(line:string)
+"   Given a line in the file explorer buffer
+"   Returns true if it represents a directory
+
+function! IsDir(line)
+  return IsOpenDir(a:line) || IsClosedDir(a:line)
+endfunction
+
+
+"""""
+" ValidateFile(line:string)
+"   Will try to make sure the given line is a valid file
+"   Returns true if so, Returns false and prints error if not
+
+function! ValidateFile(line)
+  " If it is a directory, don't open
+  if IsDir(a:line)
+    echom "ValidateFile FAIL: Tried to open directory as file"
+    return 0
   endif
 
+  " If there is no indent, it is also not a file
+  if indent(a:line) == 0
+    echom "ValidateFile FAIL: Tried to open file at 0 indentation"
+    return 0
+  endif
+
+  " If the line is empty, it is not a file
+  if strlen(a:line) == 0
+    echom "ValidateFile FAIL: Tried to open an empty file"
+    return 0
+  endif
+
+  return 1
+endfunction
+
+
+"""""
+" GetCurrentExplorerDirectory()
+"   Given the cursor at a line in the file explorer buffer
+"   This returns the fully qualified directory that cursor is at (if a dir)
+"     or the directory the file is in (if a file)
+
+function! GetCurrentExplorerDirectory()
   let line_no = line('.')
   let indent_level = indent(line_no)
 
-  if indent_level == 0
-    " Not a valid file
-    return
-  endif
-
-	let filename = getline('.')
-  let filename = substitute(filename, '^\s*\(.\{-}\)\s*$', '\1', '')
-
+  " Check if the cursor is at a directory
   let dir = ""
+  if IsDir(getline('.'))
+    let line = getline(line_no)
+    let dir = ExtractDirectoryName(line)
+  endif
 
   while indent_level > 2 && line_no > 0
     " Keep going up the file until we are out of the tree or at the top of the page
     let line_no = line_no - 1
     
-    if (getline(line_no) =~ '▾') && (indent(line_no) + 4 == indent_level)
-      " We are at an expanded directory at the proper indentation, add it to the dir
-      let folder = getline(line_no)
-      let folder = substitute(folder, '▾', '', '')
-      let folder = substitute(folder, '^\s*\(.\{-}\)\s*$', '\1', '')
+    if (IsOpenDir(getline(line_no))) && (indent(line_no) + 4 == indent_level)
+      " We are at an expanded directory at the proper indentation, add it to the dir list
+      let folder = ExtractDirectoryName(getline(line_no))
       let dir = folder.dir
       let indent_level = indent_level - 2
     endif
   endwhile
 
-  let dir = expand('%:p:h')."/".dir
+  " Return the fully qualitifed directory
+  return expand('%:p:h')."/".dir
+endfunction
 
-  if line_no == 0
-    " We went all the way to the beginning, something went wrong
+
+"""""
+" OpenFileInTmuxPane()
+"   If the cursor is on a file in the file explorer,
+"   Then open that file in a vim server called tmux
+
+function! OpenFileInTmuxPane()
+  let line_no = line('.')
+  let cur_line = TrimString(getline(line_no))
+
+  if (!ValidateFile(cur_line))
     return
   endif
 
+  let dir = GetCurrentExplorerDirectory()
+  let filename = cur_line
   let file = dir.filename
-  echom file
 
   let opencmd=":silent !vim --servername tmux --remote-tab ".file
   execute opencmd | redraw!
 endfunction
 
 
-nnoremap <C-Up> :call OpenPrevFileInWindow()<CR>
-nnoremap <C-Down> :call OpenNextFileInWindow()<CR>
+"""""
+" CreateFileInCurrentDirectory(filename:string)
+"   Creates a file with the given name in the 
+"     current directory and opens it in tmux pane
 
-nnoremap <C-E> :call OpenFileInTmuxPane()<CR>
+function! CreateFileInCurrentDirectory(filename)
+  let line_no = line('.')
+  let cur_dir = expand('%:p:h')
+
+  let dir = GetCurrentExplorerDirectory()
+  let file = dir.a:filename
+
+  " Create the file
+  execute ":silent !touch ".file
+
+  " Open it in the tmux tab
+  execute ":silent !vim --servername tmux --remote-tab ".file
+
+  " Redraw
+  redraw!
+
+  " Refresh the file"
+  call feedkeys("r")
+endfunction
+
+
+"""""
+" DeleteFileUnderCursor()
+"   Deletes the file under the cursor
+
+function! DeleteFileUnderCursor()
+  let line_no = line('.')
+  let cur_line = getline('.')
+  let cur_dir = expand('%:p:h')
+
+  " Make sure its a file
+  if !ValidateFile(cur_line)
+    return
+  endif
+
+  let dir = GetCurrentExplorerDirectory()
+  let filename = TrimString(cur_line)
+  let file = dir.filename
+
+  " Remove the file
+  execute ":silent !rm ".file
+  
+  " Redraw
+  redraw!
+
+  " Refresh the file"
+  call feedkeys("kr")
+endfunction
+  
+let g:netrw_fastbrowse=0
+
+
+""""""""""""""""""" SOAR FUNCTIONS """""""""""""""""""
 
 

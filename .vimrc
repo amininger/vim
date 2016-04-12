@@ -51,6 +51,16 @@ set hlsearch
 
 so $MY_VIM_DIR/scripts
 
+" Mappings for scripting functions
+nnoremap <C-Up> :call OpenPrevFileInWindow()<CR>
+nnoremap <C-Down> :call OpenNextFileInWindow()<CR>
+
+nnoremap <C-E> :call OpenFileInTmuxPane()<CR>
+
+command FO call OpenFileInTmuxPane()
+command -nargs=1 FC call CreateFileInCurrentDirectory(<f-args>)
+command FDEL call DeleteFileUnderCursor()
+
 let g:netrw_liststyle=3
 
 "runtime indent/soar.vim
