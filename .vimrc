@@ -8,7 +8,7 @@ filetype plugin indent on
 syntax on
 
 
-set noexpandtab
+set expandtab
 set tabstop=2
 set shiftwidth=2
 set smarttab
@@ -37,6 +37,7 @@ nnoremap L zo
 set hlsearch
 
 so $MY_VIM_DIR/scripts
+so $MY_VIM_DIR/soar_scripts.vim
 
 let g:netrw_liststyle=3
 
