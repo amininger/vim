@@ -81,7 +81,7 @@ function! GetSoarIndent( line_num )
         if prev_codeline =~ '\^'
             for i in range(len(prev_codeline))
                 if prev_codeline[i-1] == "^"
-                    return i
+                    return i-1
                 endif
             endfor
         else

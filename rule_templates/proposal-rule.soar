@@ -1,0 +1,6 @@
+sp {SVAR
+  (state <s> ^name SVAR)
+-->
+  (<s> ^operator <o> +)
+  (<o> ^name SVAR)
+}
