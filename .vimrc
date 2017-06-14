@@ -23,8 +23,8 @@ filetype plugin indent on
 
 " ####### END VUNDLE #######
 
-set expandtab
 set tabstop=4
+set softtabstop=4
 set shiftwidth=4
 set smarttab
 set autoindent
@@ -55,9 +55,8 @@ so $MY_VIM_DIR/scripts
 so $MY_VIM_DIR/soar_scripts.vim
 
 " Mappings for scripting functions
-nnoremap <C-Up> :call OpenPrevFileInWindow()<CR>
-nnoremap <C-Down> :call OpenNextFileInWindow()<CR>
-nnoremap <C-Right> :call OpenCurrentFileInWindow()<CR>
+nnoremap <S-K> :call OpenPrevFileInWindow()<CR>
+nnoremap <S-J> :call OpenNextFileInWindow()<CR>
 
 nnoremap <C-E> :call OpenFileInTmuxPane()<CR>
 
@@ -71,6 +70,9 @@ command PROP call AddRuleTemplateToFile("proposal-rule.soar")
 command APPLY call AddRuleTemplateToFile("application-rule.soar")
 command COMMPROP call AddRuleTemplateToFile("comment-proposal.soar")
 command COMMAPP call AddRuleTemplateToFile("comment-application.soar")
+
+
+command SRC call AddFileToSoarSource()
 
 nnoremap <C-P> :call FindNextInsert()<CR>
 inoremap <C-P> <ESC>:call FindNextInsert()<CR>

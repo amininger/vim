@@ -22,11 +22,22 @@ endfunction
 
 function! GetEditCommandForFile()
 	let line_arr = split(getline('.'), "|")
+
+    " Must have at least 2 parts (for the line number)
+	if len(line_arr) < 2
+		return ""
+	endif
+
+    " Don't open a binary file
     let filename = line_arr[0]
     if (filename =~ "Binary file")
         return ""
     endif
+
 	let lineno = line_arr[1]
+	if strlen(filename) == 0
+		return ""
+	endif
 	return "e +".lineno." ".filename
 endfunction
 	
@@ -295,3 +306,13 @@ function! FindNextInsert()
   call feedkeys("c3l")
 endfunction
 
+" Look for a source file in the current directory (named <dir>_source.soar)
+" Append a soar command to source the current file to that source file
+function! AddFileToSoarSource()
+	let dir = expand('%:p:h')
+	let source_file = dir."/".expand('%:p:h:t')."_source.soar"
+	let file = expand('%:t')
+	execute ":call system(\"echo \'\nsource ".file."\' >> ".source_file."\")"
+	echo "Added ".file." to ".expand('%:p:h:t')."_source.soar"
+endfunction
+	
