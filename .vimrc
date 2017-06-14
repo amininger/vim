@@ -65,17 +65,16 @@ command -nargs=1 FC call CreateFileInCurrentDirectory(<f-args>)
 command -nargs=1 FRN call RenameFileUnderCursor(<f-args>)
 command FDEL call DeleteFileUnderCursor()
 
-command PREF call AddRuleTemplateToFile("preference-rule.soar")
-command PROP call AddRuleTemplateToFile("proposal-rule.soar")
-command APPLY call AddRuleTemplateToFile("application-rule.soar")
-command COMMPROP call AddRuleTemplateToFile("comment-proposal.soar")
-command COMMAPP call AddRuleTemplateToFile("comment-application.soar")
+" Mappings for Soar Scripts "
 
+nnoremap <silent> ;prop :call InsertOperatorProposal()<CR>
+nnoremap <silent> ;pref :call InsertSoarPreference()<CR>
+nnoremap <silent> ;app :call InsertOperatorApplication()<CR>
 
 command SRC call AddFileToSoarSource()
 
-nnoremap <C-P> :call FindNextInsert()<CR>
-inoremap <C-P> <ESC>:call FindNextInsert()<CR>
+nnoremap <C-I> :call FindNextInsert()<CR>
+inoremap <C-I> <ESC>:call FindNextInsert()<CR>
 
 let g:netrw_liststyle=3
 let g:netrw_fastbrowse=0

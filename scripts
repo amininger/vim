@@ -291,28 +291,3 @@ function! DeleteFileUnderCursor()
   call feedkeys("kr")
 endfunction
 
-
-""""""""""""""""""" SOAR FUNCTIONS """""""""""""""""""
-
-function! AddRuleTemplateToFile(template_name)
-  let file = $MY_VIM_DIR."/rule_templates/".a:template_name
-  let cmd = "read ".file
-  echo cmd
-  execute cmd
-endfunction
-
-function! FindNextInsert()
-  execute "normal! gg/#!#\<cr>"
-  call feedkeys("c3l")
-endfunction
-
-" Look for a source file in the current directory (named <dir>_source.soar)
-" Append a soar command to source the current file to that source file
-function! AddFileToSoarSource()
-	let dir = expand('%:p:h')
-	let source_file = dir."/".expand('%:p:h:t')."_source.soar"
-	let file = expand('%:t')
-	execute ":call system(\"echo \'\nsource ".file."\' >> ".source_file."\")"
-	echo "Added ".file." to ".expand('%:p:h:t')."_source.soar"
-endfunction
-	

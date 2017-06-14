@@ -1,9 +1,0 @@
-sp {SVAR
-  (state <s> ^name SVAR
-              ^operator <o1> +
-              ^operator <o2> +)
-  (<o1> ^name SVAR)
-  (<o2> ^name SVAR)
--->
-  (<s> ^operator <o1> > <o2>)
-}
