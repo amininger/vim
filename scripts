@@ -23,8 +23,14 @@ endfunction
 
 function! GetEditCommandForFile()
 	let line_arr = split(getline('.'), "|")
+	if len(line_arr) < 2
+		return ""
+	endif
 	let filename = line_arr[0]
 	let lineno = line_arr[1]
+	if strlen(filename) == 0
+		return ""
+	endif
 	return "e +".lineno." ".filename
 endfunction
 	
@@ -253,3 +259,14 @@ function! FindNextSVar()
   execute "normal! gg/SVAR\<cr>"
   call feedkeys("cw")
 endfunction
+
+" Look for a source file in the current directory (named <dir>_source.soar)
+" Append a soar command to source the current file to that source file
+function! AddFileToSoarSource()
+	let dir = expand('%:p:h')
+	let source_file = dir."/".expand('%:p:h:t')."_source.soar"
+	let file = expand('%:t')
+	execute ":call system(\"echo \'\nsource ".file."\' >> ".source_file."\")"
+	echo "Added ".file." to ".expand('%:p:h:t')."_source.soar"
+endfunction
+	

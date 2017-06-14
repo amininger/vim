@@ -50,6 +50,14 @@ function! GetSoarIndent( line_num )
 	let prev_codeline = getline( prev_codeline_num )
 	let indnt = indent( prev_codeline_num )
 
+    " Line ends with a parenthesis, go back to normal
+    if prev_codeline =~ ')$'
+        return &shiftwidth
+    endif
+    if prev_codeline =~ ')}$'
+        return &shiftwidth
+    endif
+
     " Comes after a comment or is a comment, use same indent
     if this_codeline =~ '^\s*#'
         return indnt
@@ -65,14 +73,6 @@ function! GetSoarIndent( line_num )
 
     " Coming after sp{ or --> so do a normal indent
     if prev_codeline =~ '^\s*\(sp\s*{\|-->\)'
-        return &shiftwidth
-    endif
-
-    " Line ends with a parenthesis, go back to normal
-    if prev_codeline =~ ')$'
-        return &shiftwidth
-    endif
-    if prev_codeline =~ ')}$'
         return &shiftwidth
     endif
 
