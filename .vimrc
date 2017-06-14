@@ -1,9 +1,11 @@
 let &runtimepath.=','.$MY_VIM_DIR
 
+set term=xterm-256color
+
 syntax on
 
 " ######### VUNDLE ########
-
+"
 set nocompatible
 filetype off
 
@@ -22,8 +24,8 @@ filetype plugin indent on
 " ####### END VUNDLE #######
 
 set expandtab
-set tabstop=2
-set shiftwidth=2
+set tabstop=4
+set shiftwidth=4
 set smarttab
 set autoindent
 set backspace=indent,eol,start
@@ -55,6 +57,7 @@ so $MY_VIM_DIR/soar_scripts.vim
 " Mappings for scripting functions
 nnoremap <C-Up> :call OpenPrevFileInWindow()<CR>
 nnoremap <C-Down> :call OpenNextFileInWindow()<CR>
+nnoremap <C-Right> :call OpenCurrentFileInWindow()<CR>
 
 nnoremap <C-E> :call OpenFileInTmuxPane()<CR>
 
@@ -66,9 +69,11 @@ command FDEL call DeleteFileUnderCursor()
 command PREF call AddRuleTemplateToFile("preference-rule.soar")
 command PROP call AddRuleTemplateToFile("proposal-rule.soar")
 command APPLY call AddRuleTemplateToFile("application-rule.soar")
+command COMMPROP call AddRuleTemplateToFile("comment-proposal.soar")
+command COMMAPP call AddRuleTemplateToFile("comment-application.soar")
 
-nnoremap <C-F> :call FindNextSVar()<CR>
-inoremap <C-F> <ESC>:call FindNextSVar()<CR>
+nnoremap <C-P> :call FindNextInsert()<CR>
+inoremap <C-P> <ESC>:call FindNextInsert()<CR>
 
 let g:netrw_liststyle=3
 let g:netrw_fastbrowse=0

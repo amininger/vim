@@ -22,11 +22,23 @@ endfunction
 
 function! GetEditCommandForFile()
 	let line_arr = split(getline('.'), "|")
-	let filename = line_arr[0]
+    let filename = line_arr[0]
+    if (filename =~ "Binary file")
+        return ""
+    endif
 	let lineno = line_arr[1]
 	return "e +".lineno." ".filename
 endfunction
 	
+"""""
+" OpenCurrentFileInWindow()
+"   Will open the file at the current cursor location in the copen buffer
+
+function! OpenCurrentFileInWindow()
+	let editcmd=GetEditCommandForFile()
+	wincmd k
+	execute(editcmd)
+endfunction
 
 """""
 " OpenPrevFileInWindow()
@@ -43,7 +55,7 @@ endfunction
 
 
 """""
-" OpenPrevFileInWindow()
+" OpenNextFileInWindow()
 "   Will move the cursor to the next line in the copen buffer
 "   and open that file in the panel above this one
 
@@ -54,6 +66,8 @@ function! OpenNextFileInWindow()
 	wincmd k
 	execute(editcmd)
 endfunction
+
+
 
 """"""""""""""""""" FILE EXPLORER """""""""""""""""""
 " These functions are used within the file explorer
@@ -276,8 +290,8 @@ function! AddRuleTemplateToFile(template_name)
   execute cmd
 endfunction
 
-function! FindNextSVar()
-  execute "normal! gg/SVAR\<cr>"
-  call feedkeys("cw")
+function! FindNextInsert()
+  execute "normal! gg/#!#\<cr>"
+  call feedkeys("c3l")
 endfunction
 

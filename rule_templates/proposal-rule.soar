@@ -1,6 +1,6 @@
-sp {SVAR
-  (state <s> ^name SVAR)
+sp {_DIR_*propose*_FILE_*SVAR
+  (state <s> ^name _DIR_)
 -->
   (<s> ^operator <o> +)
-  (<o> ^name SVAR)
+  (<o> ^name _FILE_)
 }
