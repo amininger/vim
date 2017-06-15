@@ -73,8 +73,8 @@ nnoremap <silent> ;app :call InsertOperatorApplication()<CR>
 
 command SRC call AddFileToSoarSource()
 
-nnoremap <C-I> :call FindNextInsert()<CR>
-inoremap <C-I> <ESC>:call FindNextInsert()<CR>
+nnoremap <C-P> :call FindNextInsert()<CR>
+inoremap <C-P> <ESC>:call FindNextInsert()<CR>
 
 let g:netrw_liststyle=3
 let g:netrw_fastbrowse=0

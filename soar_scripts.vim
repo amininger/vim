@@ -12,8 +12,10 @@ endfunction
 
 " Will search file for #!# and remove them and go to insert mode
 function! FindNextInsert()
-  execute "normal! gg/#!#\<cr>"
-  call feedkeys("c3l")
+	if search("#!#") != 0
+	    execute "normal! gg/#!#\<cr>"
+	    call feedkeys("c3l")
+	endif
 endfunction
 
 
