@@ -48,34 +48,13 @@ set foldlevelstart=20
 nnoremap H zc
 nnoremap L zo
 
-
 set hlsearch
 
 so $MY_VIM_DIR/scripts
-so $MY_VIM_DIR/soar_scripts.vim
+so $MY_VIM_DIR/netrw_extensions.vim
+so $MY_VIM_DIR/soar_plugin/load_plugin.vim
 
 " Mappings for scripting functions
 nnoremap <S-K> :call OpenPrevFileInWindow()<CR>
 nnoremap <S-J> :call OpenNextFileInWindow()<CR>
 
-nnoremap <C-E> :call OpenFileInTmuxPane()<CR>
-
-command FO call OpenFileInTmuxPane()
-command -nargs=1 FC call CreateFileInCurrentDirectory(<f-args>)
-command -nargs=1 FRN call RenameFileUnderCursor(<f-args>)
-command FDEL call DeleteFileUnderCursor()
-
-" Mappings for Soar Scripts "
-
-nnoremap <silent> ;prop :call InsertOperatorProposal()<CR>
-nnoremap <silent> ;pref :call InsertSoarPreference()<CR>
-nnoremap <silent> ;app :call InsertOperatorApplication()<CR>
-
-command SRC call AddFileToSoarSource()
-
-nnoremap <C-P> :call FindNextInsert()<CR>
-inoremap <C-P> <ESC>:call FindNextInsert()<CR>
-
-let g:netrw_liststyle=3
-let g:netrw_fastbrowse=0
-"runtime indent/soar.vim
