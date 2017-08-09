@@ -28,6 +28,8 @@ class AgentConfig:
         self.agent_source = self.props.get("agent-source", None)
         self.smem_source = self.props.get("smem-source", None)
 
+        self.messages_file = self.props.get("messages-file", None)
+
         self.verbose = self.props.get("verbose", "false") == "true"
         self.watch_level = int(self.props.get("watch-level", "1"))
         self.spawn_debugger = self.props.get("spawn-debugger", "true") == "true"
@@ -210,7 +212,11 @@ class SoarAgent:
                 if agent.IsCommitRequired():
                     agent.Commit()
         except:
+            e = sys.exc_info()
             self.writer.write("ERROR IN RUN HANDLER")
+            self.writer.write(str(e[0]))
+            self.writer.write(str(e[1]))
+            self.writer.write(str(e[2]))
 
     @staticmethod
     def print_event_handler(eventID, self, agent, message):

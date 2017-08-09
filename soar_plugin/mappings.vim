@@ -6,10 +6,14 @@ command SRC call AddFileToSoarSource()
 """""""""""""" parsing.vim """""""""""""""""
 " delete production
 nnoremap ;dp :call DeleteCurrentSoarRule()<CR>
-" copy production
-nnoremap ;cp :let @" = GetCurrentSoarRuleBody()<CR>
-" copy rule name
-nnoremap ;cr :let @" = GetStrippedCurrentWord()<CR>
+" yank production (to vim buffer)
+nnoremap ;yp :let @" = GetCurrentSoarRuleBody()<CR>
+" yank rule name (to vim buffer)
+nnoremap ;yr :let @" = GetStrippedCurrentWord()<CR>
+" copy production (to clipboard)
+nnoremap ;cp :let @+ = GetCurrentSoarRuleBody()<CR>
+" copy rule name (to clipboard)
+nnoremap ;cr :let @+ = GetStrippedCurrentWord()<CR>
 
 """""""""""""""" templates.vim """"""""""""""""""
 command PROP call InsertOperatorProposal()<CR>

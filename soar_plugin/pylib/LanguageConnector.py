@@ -54,7 +54,7 @@ class Message:
         pass
 
     def remove_from_wm(self):
-        if not added or self.message_id == None:
+        if not self.added or self.message_id == None:
             return
         self.message_id.DestroyWME()
         self.message_id = None
@@ -70,6 +70,10 @@ class LanguageConnector:
         self.current_message = None
         self.next_message_id = 1
         self.language_id = None
+
+        if self.agent.config.messages_file != None:
+            with open(self.agent.config.messages_file, 'r') as f:
+                vim.command("let g:rosie_messages = [\"" + "\",\"".join([ line.rstrip('\n') for line in f.readlines()]) + "\"]")
 
         self.messages_to_remove = set()
 

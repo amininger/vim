@@ -85,9 +85,27 @@ function! ExecuteUserSoarCommand()
 	python agent.execute_command(vim.eval("cmd"))
 endfunction
 
+function! ListRosieMessages(A,L,P)
+	if !exists("g:rosie_messages")
+		let msgs = []
+	else
+		let msgs = g:rosie_messages
+	endif
+
+	let res = []
+	let pattern = "^".a:A
+	for msg in msgs
+		if msg =~ pattern
+			call add(res, msg)
+		endif
+	endfor
+	return res
+endfunction
+
+
 function! SendMessageToRosie()
 	call inputsave()
-	let msg = input('Enter message: ')
+	let msg = input('Enter message: ', "", "customlist,ListRosieMessages")
 	call inputrestore()
 	python send_message(vim.eval("msg"))
 endfunction
