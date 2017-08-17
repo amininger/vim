@@ -60,7 +60,6 @@ nnoremap <C-M> :tabnext<Enter>
 "nnoremap H zc
 "nnoremap L zo
 
-" 
 set hlsearch
 
 " ############# MAPPINGS #################
@@ -86,7 +85,8 @@ set hlsearch
 " ############### SCRIPTS #################
 
 so $MY_VIM_DIR/scripts
-so $MY_VIM_DIR/soar_scripts.vim
+so $MY_VIM_DIR/netrw_extensions.vim
+so $MY_VIM_DIR/soar_plugin/load_plugin.vim
 
 " Mappings for scripting functions
 
