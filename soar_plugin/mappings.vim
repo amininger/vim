@@ -19,6 +19,8 @@ nnoremap ;cr :let @+ = GetStrippedCurrentWord()<CR>
 command PROP call InsertOperatorProposal()<CR>
 command PREF call InsertSoarPreference()<CR>
 command APP call InsertOperatorApplication()<CR>
+command ELAB call InsertStateElaboration()<CR>
+command REJ call InsertOperatorRejection()<CR>
 
 nnoremap <C-P> :call FindNextInsert()<CR>
 inoremap <C-P> <ESC>:call FindNextInsert()<CR>
@@ -50,6 +52,9 @@ nnoremap ;pr :call ExecuteSoarCommand("p ".GetStrippedCurrentWord())<CR>
 nnoremap ;mr :call ExecuteSoarCommand("matches ".GetStrippedCurrentWord())<CR>
 " excise rule name
 nnoremap ;er :call ExecuteSoarCommand("excise ".GetStrippedCurrentWord())<CR>
+
+" Source the current file
+nnoremap ;sf :call ExecuteSoarCommand("source ".expand('%:p'))<CR>
 
 " print wmes
 nnoremap ;p1 :<C-U>call ExecuteSoarCommand("p ".GetStrippedCurrentWord())<CR>

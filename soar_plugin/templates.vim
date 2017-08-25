@@ -44,6 +44,11 @@ function! InsertOperatorProposal(...)
   execute("%s/__STATE__NAME__/".state_name."/g")
   execute("%s/__OP__NAME__/".op_name."/g")
 endfunction
+
+function! InsertOperatorRejection(...)
+  let templateFile = $MY_VIM_DIR."/soar_plugin/templates/reject"
+  execute("r ".templateFile)
+endfunction
 	
 function! InsertOperatorApplication(...)
   let directory = expand('%:p:h:t')
@@ -64,4 +69,19 @@ function! InsertOperatorApplication(...)
 
   execute("%s/__STATE__NAME__/".state_name."/g")
   execute("%s/__OP__NAME__/".op_name."/g")
+endfunction
+	
+function! InsertStateElaboration(...)
+  let directory = expand('%:p:h:t')
+  let filename = substitute(expand('%:t'), "\.soar", "", "g")
+  let templateFile = $MY_VIM_DIR."/soar_plugin/templates/elaboration"
+
+  execute("r ".templateFile)
+
+  let state_name = directory
+  if a:0 > 1
+    let state_name = a:2
+  endif
+
+  execute("%s/__STATE__NAME__/".state_name."/g")
 endfunction
