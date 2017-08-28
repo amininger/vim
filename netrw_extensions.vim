@@ -2,8 +2,11 @@ nnoremap <C-E> :call OpenFileInTmuxPane()<CR>
 
 command FO call OpenFileInTmuxPane()
 command -nargs=1 FC call CreateFileInCurrentDirectory(<f-args>)
+command -nargs=1 DC call CreateNewDirInCurrentDirectory(<f-args>)
 command -nargs=1 FRN call RenameFileUnderCursor(<f-args>)
 command FDEL call DeleteFileUnderCursor()
+command DDEL call DeleteDirUnderCursor()
+command GETDIR call GetCurrentExplorerDirectory()
 
 let g:netrw_liststyle=3
 let g:netrw_fastbrowse=0
@@ -89,29 +92,32 @@ endfunction
 
 function! GetCurrentExplorerDirectory()
   let line_no = line('.')
-  let indent_level = indent(line_no)
 
   " Check if the cursor is at a directory
   let dir = ""
-  if IsDir(getline('.'))
-    let line = getline(line_no)
-    let dir = ExtractDirectoryName(line)
+  if !IsDir(getline('.'))
+	" Go backwards until you find a valid directory
+	let indent_level = indent(line_no) - 4
+	while line_no > 0 && indent(line_no) != indent_level
+		let line_no = line_no - 1
+	endwhile
   endif
+  let dir = ExtractDirectoryName(getline(line_no))
 
-  while indent_level > 2 && line_no > 0
-    " Keep going up the file until we are out of the tree or at the top of the page
-    let line_no = line_no - 1
-    
-    if (IsOpenDir(getline(line_no))) && (indent(line_no) + 4 == indent_level)
-      " We are at an expanded directory at the proper indentation, add it to the dir list
-      let folder = ExtractDirectoryName(getline(line_no))
-      let dir = folder.dir
-      let indent_level = indent_level - 2
-    endif
+  let indent_level = indent(line_no)
+  " Keep unwinding the directory stack until you reach the top (no indent)
+  while indent_level > 0 && line_no > 0
+	  let line_no = line_no - 1
+	  if IsOpenDir(getline(line_no)) && indent(line_no) == indent_level - 2
+		let parent_dir = ExtractDirectoryName(getline(line_no))
+		let dir = parent_dir.dir
+		let indent_level = indent_level - 2
+	 endif
   endwhile
 
   " Return the fully qualitifed directory
-  return expand('%:p:h')."/".dir
+  let dir = expand('%:p:h')."/".dir
+  return dir
 endfunction
 
 
@@ -154,6 +160,30 @@ function! CreateFileInCurrentDirectory(filename)
 
   " Open it in the tmux tab
   execute ":silent !vim --servername tmux --remote-tab ".file
+
+  " Redraw
+  redraw!
+
+  " Refresh the file"
+  call feedkeys("r")
+endfunction
+
+"""""
+" CreateNewDirInCurrentDirectory(filename:string)
+"   Creates a new directory with the given name in the 
+"     current directory 
+
+function! CreateNewDirInCurrentDirectory(dir_name)
+  let line_no = line('.')
+  let cur_dir = expand('%:p:h')
+
+  let dir = GetCurrentExplorerDirectory()
+  let new_dir = dir.a:dir_name
+
+  echom new_dir
+
+  " Create the file
+  execute ":silent !mkdir ".new_dir
 
   " Redraw
   redraw!
@@ -211,6 +241,32 @@ function! DeleteFileUnderCursor()
 
   " Remove the file
   execute ":silent !rm ".file
+  
+  " Redraw
+  redraw!
+
+  " Refresh the file"
+  call feedkeys("kr")
+endfunction
+
+"""""
+" DeleteDirUnderCursor()
+"   Deletes the directory under the cursor
+
+function! DeleteDirUnderCursor()
+  let line_no = line('.')
+  let cur_line = getline('.')
+  let cur_dir = expand('%:p:h')
+
+  " Make sure its a file
+  if !IsDir(cur_line)
+    return
+  endif
+
+  let dir = GetCurrentExplorerDirectory()
+
+  " Remove the file
+  execute ":silent !rm -r ".dir
   
   " Redraw
   redraw!

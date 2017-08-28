@@ -8,3 +8,4 @@ function! AddFileToSoarSource()
 	execute ":call system(\"echo \'\nsource ".file."\' >> ".source_file."\")"
 	echo "Added ".file." to ".expand('%:p:h:t')."_source.soar"
 endfunction
+
