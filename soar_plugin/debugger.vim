@@ -14,7 +14,7 @@ function! LaunchRosieAgent()
 	exec "wincmd h"
 
 	call inputsave()
-	let agent_name = input('Enter config file: ', 'H-layout')
+	let agent_name = input('Enter config file: ', 'aaai18eval')
 	let file_name = $ROSIE_HOME."/test-agents/".agent_name."/agent/rosie.".agent_name.".config"
 	echo file_name
 	call inputrestore()
