@@ -1,0 +1,56 @@
+Soar Debugger Vim Plugin + Rosie
+Author: Aaron Mininger
+Written: Summer 2017
+
+Purpose: This plugin is to integrate the soar debugger within a vim environment.
+  It will mimic the soar debugger layout and allow normal debugging operations.
+  It also provides the ability to integrate with editing soar files and being able to 
+    seamlessly interleave writing/editing soar rules while the agent is running
+
+  This plugin is also specifically designed to run the Rosie project in the SoarGroup
+    
+
+===================================================
+DIRECTORY STRUCTURE
+
+util.vim: Contains general soar utility functions
+parsing.vim: Contains functions for parsing soar rules
+templates.vim: Contains functions for inserting templates of common soar rules
+debugger.vim: Contains functions for running the rosie agent within vim
+mappings.vim: Contains key bindings for debugger functionality 
+
+pylib: contains python SML code used to interface with the soar debugger
+
+==================================================
+DEFAULT VIM MAPPINGS
+
+:SRC   | Source a soar file
+:STOP  | Kills the agent
+:START | Launches the rosie agent
+
+Ctrl+I | Start/Stop the agent running
+H      | Step the agent one decision cycle 
+U      | Step the agent 10 decision cycles
+;re    | Run 1 elaboration cycle (run 1 -e)
+;mm    | Runs the matches command
+#      | Execute a custom soar command
+
+;dp | Delete the production the cursor is inside
+;yp | Yank (to buffer) the production the cursor is on
+;yr | Yank (to buffer) the rule name the cursor is on
+;cp | Copy (to clipboard) the production the cursor is on
+;cr | Copy (to clipboard) the rule name the cursor is on
+;sp | Source the production the cursor is on
+;ep | Excises the production the cursor is on
+;mp | Runs a matching command with the current production or rule name
+;pr | Prints the production with the name under the cursor
+
+:PROP | Insert an operator proposal production template
+:PREF | Insert an operator preference production template
+:REJ  | Insert an operator rejection production template
+:APP  | Insert an operator application production template
+:ELAB | Insert a state elaboration production template
+Ctrl+P | Goes to the next insertion point in a template (marked by #!#)
+
+
+
