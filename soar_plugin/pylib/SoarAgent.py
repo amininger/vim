@@ -17,11 +17,14 @@ class AgentConfig:
     def __init__(self, config_file):
         # Read config file
         self.props = {}
-        with open(config_file, 'r') as fin:
-            for line in fin:
-                args = line.split()
-                if len(args) == 3 and args[1] == '=':
-                    self.props[args[0]] = args[2]
+        try:
+            with open(config_file, 'r') as fin:
+                for line in fin:
+                    args = line.split()
+                    if len(args) == 3 and args[1] == '=':
+                        self.props[args[0]] = args[2]
+        except EnvironmentError:
+            pass
 
         # Set config values
         self.agent_name = self.props.get("agent-name", "rosie")
@@ -32,7 +35,7 @@ class AgentConfig:
 
         self.verbose = self.props.get("verbose", "false") == "true"
         self.watch_level = int(self.props.get("watch-level", "1"))
-        self.spawn_debugger = self.props.get("spawn-debugger", "true") == "true"
+        self.spawn_debugger = self.props.get("spawn-debugger", "false") == "true"
         self.write_to_stdout = self.props.get("write-to-stdout", "false") == "true"
         self.write_log = self.props.get("enable-log", "false") == "true"
 

@@ -2,7 +2,26 @@ if !has('python')
 	finish
 endif
 
+function! LaunchSoarAgent()
+	call inputsave()
+	let config_file = input('Enter config file: ', "", "file")
+	echo config_file
+	call inputrestore()
+	call SetupDebuggerPanes()
+	call LaunchSoarAgentFromConfig(config_file)
+endfunction
+
 function! LaunchRosieAgent()
+	call inputsave()
+	let agent_name = input('Enter config file: ', 'aaai18eval')
+	let config_file = $ROSIE_HOME."/test-agents/".agent_name."/agent/rosie.".agent_name.".config"
+	echo config_file
+	call inputrestore()
+	call SetupDebuggerPanes()
+	call LaunchSoarAgentFromConfig(config_file)
+endfunction
+
+function! SetupDebuggerPanes()
 	exec "e debugging.soar"
 	call feedkeys("ggVGd")
 	exec "vs"
@@ -12,19 +31,16 @@ function! LaunchRosieAgent()
 	exec "wincmd j"
 	exec "e states"
 	exec "wincmd h"
+endfunction
 
-	call inputsave()
-	let agent_name = input('Enter config file: ', 'aaai18eval')
-	let file_name = $ROSIE_HOME."/test-agents/".agent_name."/agent/rosie.".agent_name.".config"
-	echo file_name
-	call inputrestore()
+function! LaunchSoarAgentFromConfig(config_file)
+	let file_name = a:config_file
 
 python << EOF
 import sys
 import os
 
 print os.environ["PYTHONPATH"]
-
 
 from SoarAgent import AgentConfig
 from SoarAgent import SoarAgent
@@ -83,6 +99,13 @@ function! ExecuteUserSoarCommand()
 	let cmd = input('Enter command: ')
 	call inputrestore()
 	python agent.execute_command(vim.eval("cmd"))
+endfunction
+
+function! SourceSoarFile()
+	call inputsave()
+	let filename = input('Enter soar file name: ', "", "file")
+	call inputrestore()
+	call ExecuteSoarCommand("source ".filename)
 endfunction
 
 function! ListRosieMessages(A,L,P)
