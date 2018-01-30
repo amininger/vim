@@ -65,8 +65,8 @@ def startstop():
 		agent.start()
 
 def send_message(msg):
-    if len(msg.strip()) > 0:
-	    agent.language_connector.send_message(msg)
+	if len(msg.strip()) > 0:
+		agent.language_connector.send_message(msg)
 
 def resize_windows():
 	vim.current.window = writer.get_window(VimWriter.DEBUGGER_WIN)

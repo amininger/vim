@@ -24,8 +24,14 @@ class VimWriter:
             del window.buffer[:]
         for line in message.split("\n"):
             window.buffer.append(line)
-        if win_num == VimWriter.DEBUGGER_WIN:
+        if win_num != VimWriter.STATE_WIN:
             window.cursor = (len(window.buffer), 0)
+            if win_num != VimWriter.DEBUGGER_WIN:
+                prev_win = vim.current.window
+                vim.current.window = window
+                vim.command("redraw!")
+                vim.current.window = prev_win
 
     def get_window(self, win_num):
         return self.win_map[win_num]
+
