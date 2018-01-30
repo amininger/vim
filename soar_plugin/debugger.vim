@@ -29,6 +29,9 @@ function! SetupDebuggerPanes()
 	exec "e messages"
 	exec "sp"
 	exec "wincmd j"
+	exec "e actions"
+	exec "sp"
+	exec "wincmd j"
 	exec "e states"
 	exec "wincmd h"
 endfunction
@@ -77,8 +80,11 @@ def resize_windows():
 	vim.command("let cur_winw2 = winwidth(0)")
 	width += int(vim.eval("cur_winw2"))
 
-	vim.command("resize " + str(int(height/2)))
+	vim.command("resize " + str(int(height/3)))
 	vim.command("vertical resize " + str(int(width/3)))
+
+	vim.current.window = writer.get_window(VimWriter.ACTIONS_WIN)
+	vim.command("resize " + str(int(height/3)))
 
 	vim.current.window = writer.get_window(VimWriter.DEBUGGER_WIN)
 

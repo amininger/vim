@@ -7,6 +7,7 @@ import time
 import Python_sml_ClientInterface as sml
 
 from LanguageConnector import LanguageConnector
+from ActuationConnector import ActuationConnector
 from SoarUtil import SoarWME
 from VimWriter import VimWriter
 
@@ -71,6 +72,7 @@ class SoarAgent:
         self.agent.ExecuteCommandLine("w " + str(config.watch_level))
 
         self.language_connector = LanguageConnector(self)
+        self.actuation_connector = ActuationConnector(self)
 
         self.connect()
 
@@ -92,6 +94,7 @@ class SoarAgent:
                 sml.smlEVENT_BEFORE_AGENT_REINITIALIZED, SoarAgent.init_agent_handler, self)
 
         self.language_connector.connect()
+        self.actuation_connector.connect()
 
         self.connected = True
 
@@ -111,6 +114,7 @@ class SoarAgent:
         self.init_agent_callback_id = -1
 
         self.language_connector.disconnect()
+        self.actuation_connector.disconnect()
 
         self.connected = False
 
@@ -176,6 +180,7 @@ class SoarAgent:
     def init_agent_handler(eventID, self, info):
         try:
             self.language_connector.on_init_soar()
+            self.actuation_connector.on_init_soar()
             self.seconds.remove_from_wm()
             self.steps.remove_from_wm()
             self.time_id.DestroyWME()
@@ -210,6 +215,7 @@ class SoarAgent:
                     self.writer.write(self.agent.ExecuteCommandLine("p --stack"), VimWriter.STATE_WIN, True)
 
                 self.language_connector.on_input_phase(self.agent.GetInputLink())
+                self.actuation_connector.on_input_phase(self.agent.GetInputLink())
             elif eventID == sml.smlEVENT_AFTER_INPUT_PHASE or \
                     eventID == sml.smlEVENT_AFTER_OUTPUT_PHASE:
                 if agent.IsCommitRequired():
