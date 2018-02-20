@@ -1,6 +1,6 @@
 
 """"""""""""" util.vim """""""""""""""""""""
-command SRC call AddFileToSoarSource()
+nnoremap ;add :call AddFileToSoarSource()<CR>
 
 
 """""""""""""" parsing.vim """""""""""""""""
@@ -16,19 +16,21 @@ nnoremap ;cp :let @+ = GetCurrentSoarRuleBody()<CR>
 nnoremap ;cr :let @+ = GetStrippedCurrentWord()<CR>
 
 """""""""""""""" templates.vim """"""""""""""""""
-command PROP call InsertOperatorProposal()<CR>
-command PREF call InsertSoarPreference()<CR>
-command APP call InsertOperatorApplication()<CR>
-command ELAB call InsertStateElaboration()<CR>
-command REJ call InsertOperatorRejection()<CR>
+nnoremap ;tprop :call InsertOperatorProposal()<CR>
+nnoremap ;tpref :call InsertSoarPreference()<CR>
+nnoremap ;tapp :call InsertOperatorApplication()<CR>
+nnoremap ;telab :call InsertStateElaboration()<CR>
+nnoremap ;trej :call InsertOperatorRejection()<CR>
 
 nnoremap <C-P> :call FindNextInsert()<CR>
 inoremap <C-P> <ESC>:call FindNextInsert()<CR>
 
 """""""""""" debugger.vim """"""""""""""""""""
 
-command! STOP python kill_agent()
-command! START call LaunchRosieAgent()
+nnoremap ;al :call LaunchSoarAgent()<CR>
+nnoremap ;ar :call LaunchRosieAgent()<CR>
+nnoremap ;ai :python agent.execute_command("init-soar")<CR>
+nnoremap ;ak :python kill_agent()<CR>
 nnoremap <C-I> :python startstop()<CR>
 nnoremap H :python step(1)<CR>
 nnoremap U :python step(10)<CR>
@@ -54,7 +56,9 @@ nnoremap ;mr :call ExecuteSoarCommand("matches ".GetStrippedCurrentWord())<CR>
 nnoremap ;er :call ExecuteSoarCommand("excise ".GetStrippedCurrentWord())<CR>
 
 " Source the current file
-nnoremap ;sf :call ExecuteSoarCommand("source ".expand('%:p'))<CR>
+nnoremap ;sc :call ExecuteSoarCommand("source ".expand('%:p'))<CR>
+" Source a specified file
+nnoremap ;sf :call SourceSoarFile()<CR>
 
 " print wmes
 nnoremap ;p1 :<C-U>call ExecuteSoarCommand("p ".GetStrippedCurrentWord())<CR>

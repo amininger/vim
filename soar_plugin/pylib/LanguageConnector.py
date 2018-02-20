@@ -1,6 +1,8 @@
 import sys
 import vim
 
+from string import digits
+
 from VimWriter import VimWriter
 
 class Message:
@@ -59,7 +61,6 @@ class Message:
         self.message_id.DestroyWME()
         self.message_id = None
         self.added = False
-
 
 class LanguageConnector:
     def __init__(self, agent):
@@ -134,6 +135,7 @@ class LanguageConnector:
             print sys.exc_info()
 
     def on_output_event(self, att_name, root_id):
+        self.agent.writer.write("Output Handler Callback: " + att_name)
         if att_name == "send-message":
             self.process_output_link_message(root_id)
 
@@ -141,11 +143,11 @@ class LanguageConnector:
         if root_id.GetNumberChildren() == 0:
             root_id.CreateStringWME("status", "error")
             self.agent.writer.write("LanguageConnector: Error - message has no children")
+            return
 
         for i in range(root_id.GetNumberChildren()):
             child_wme = root_id.GetChild(i)
             if child_wme.GetAttribute() == "type":
                 self.agent.writer.write("Rosie: " + child_wme.GetValueAsString(), VimWriter.MESSAGES_WIN)
                 break
-
-
+        root_id.CreateStringWME("status", "complete")
