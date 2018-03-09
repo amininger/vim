@@ -9,7 +9,7 @@ function! LaunchSoarAgent()
 	call inputrestore()
 	call SetupDebuggerPanes()
 	call CreateSoarAgentFromConfig(config_file)
-    python agent.connect()
+	python agent.connect()
 endfunction
 
 function! LaunchRosieAgent()
@@ -20,7 +20,7 @@ function! LaunchRosieAgent()
 	call inputrestore()
 	call SetupDebuggerPanes()
 	call CreateSoarAgentFromConfig(config_file)
-    python agent.connect()
+	python agent.connect()
 endfunction
 
 function! LaunchRosieThorAgent()
@@ -31,8 +31,8 @@ function! LaunchRosieThorAgent()
 	call inputrestore()
 	call SetupDebuggerPanes()
 	call CreateSoarAgentFromConfig(config_file)
-    call LaunchAi2ThorSimulator()
-    python agent.connect()
+	call LaunchAi2ThorSimulator()
+	python agent.connect()
 endfunction
 
 function! SetupDebuggerPanes()
