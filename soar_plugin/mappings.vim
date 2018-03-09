@@ -27,10 +27,11 @@ inoremap <C-P> <ESC>:call FindNextInsert()<CR>
 
 """""""""""" debugger.vim """"""""""""""""""""
 
-nnoremap ;al :call LaunchSoarAgent()<CR>
-nnoremap ;ar :call LaunchRosieAgent()<CR>
-nnoremap ;ai :python agent.execute_command("init-soar")<CR>
-nnoremap ;ak :python kill_agent()<CR>
+nnoremap ;la :call LaunchSoarAgent()<CR>
+nnoremap ;lr :call LaunchRosieAgent()<CR>
+nnoremap ;lt :call LaunchRosieThorAgent()<CR>
+nnoremap ;ia :python agent.execute_command("init-soar")<CR>
+nnoremap ;ka :python kill_agent()<CR>
 nnoremap <C-I> :python startstop()<CR>
 nnoremap H :python step(1)<CR>
 nnoremap U :python step(10)<CR>

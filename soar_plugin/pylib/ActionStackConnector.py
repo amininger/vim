@@ -2,9 +2,9 @@ import sys
 import vim
 
 from string import digits
+from pysoarlib import AgentConnector
 
 from VimWriter import VimWriter
-
 
 def task_to_string(task_id):
     handle_wme = task_id.FindByAttribute("action-handle", 0)
@@ -51,47 +51,20 @@ def obj_arg_to_string(obj_id):
 
     return obj_desc.translate(None, digits)
 
-class ActuationConnector:
-    def __init__(self, agent):
-        self.agent = agent
-        self.connected = False
-        self.output_handler_ids = { "started-action": -1, "completed-action": -1 }
+class ActionStackConnector(AgentConnector):
+    def __init__(self, agent, writer):
+        AgentConnector.__init__(self, agent, print_handler=lambda message: writer.write(message, VimWriter.DEBUGGER_WIN))
 
-    def connect(self):
-        if self.connected:
-            return
+        self.print_action = lambda message: self.writer.write(message, VimWriter.ACTIONS_WIN)
 
-        for command_name in self.output_handler_ids:
-            self.output_handler_ids[command_name] = self.agent.agent.AddOutputHandler(
-                    command_name, ActuationConnector.output_event_handler, self)
-
-        self.connected = True
-
-    def disconnect(self):
-        if not self.connected:
-            return
-
-        for command_name in self.output_handler_ids:
-            self.agent.agent.RemoveOutputHandler(self.output_handler_ids[command_name])
-            self.output_handler_ids[command_name] = -1
-
-        self.connected = False
+        self.register_output_handler("started-action")
+        self.register_output_handler("completed-action")
 
     def on_init_soar(self):
         pass
 
     def on_input_phase(self, input_link):
         pass
-
-    @staticmethod
-    def output_event_handler(self, agent_name, att_name, wme):
-        try:
-            if wme.IsJustAdded() and wme.IsIdentifier():
-                root_id = wme.ConvertToIdentifier()
-                self.on_output_event(att_name, root_id)
-        except:
-            print "ERROR IN OUTPUT EVENT HANDLER"
-            print sys.exc_info()
 
     def on_output_event(self, att_name, root_id):
         if att_name == "started-action":
@@ -103,16 +76,16 @@ class ActuationConnector:
         try:
             task_id = root_id.FindByAttribute("execution-operator", 0).ConvertToIdentifier()
             padding = "  " * (int(root_id.FindByAttribute("depth", 0).GetValueAsString()) - 1)
-            self.agent.writer.write(padding + ">" + task_to_string(task_id), VimWriter.ACTIONS_WIN)
+            self.print_action(padding + ">" + task_to_string(task_id))
         except:
-            self.agent.writer.write("Error Parsing Started Action", VimWriter.ACTIONS_WIN)
+            self.print_handler("Error Parsing Started Action")
         root_id.CreateStringWME("handled", "true")
 
     def process_completed_action(self, root_id):
         try:
             task_id = root_id.FindByAttribute("execution-operator", 0).ConvertToIdentifier()
             padding = "  " * (int(root_id.FindByAttribute("depth", 0).GetValueAsString()) - 1)
-            self.agent.writer.write(padding + "<" + task_to_string(task_id), VimWriter.ACTIONS_WIN)
+            self.print_action(padding + "<" + task_to_string(task_id))
         except:
-            self.agent.writer.write("Error Parsing Completed Action", VimWriter.ACTIONS_WIN)
+            self.print_handler("Error Parsing Completed Action")
         root_id.CreateStringWME("handled", "true")

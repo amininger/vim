@@ -8,7 +8,8 @@ function! LaunchSoarAgent()
 	echo config_file
 	call inputrestore()
 	call SetupDebuggerPanes()
-	call LaunchSoarAgentFromConfig(config_file)
+	call CreateSoarAgentFromConfig(config_file)
+    python agent.connect()
 endfunction
 
 function! LaunchRosieAgent()
@@ -18,7 +19,20 @@ function! LaunchRosieAgent()
 	echo config_file
 	call inputrestore()
 	call SetupDebuggerPanes()
-	call LaunchSoarAgentFromConfig(config_file)
+	call CreateSoarAgentFromConfig(config_file)
+    python agent.connect()
+endfunction
+
+function! LaunchRosieThorAgent()
+	call inputsave()
+	let agent_name = input('Enter config file: ', 'ai2thor')
+	let config_file = $ROSIE_HOME."/test-agents/".agent_name."/agent/rosie.".agent_name.".config"
+	echo config_file
+	call inputrestore()
+	call SetupDebuggerPanes()
+	call CreateSoarAgentFromConfig(config_file)
+    call LaunchAi2ThorSimulator()
+    python agent.connect()
 endfunction
 
 function! SetupDebuggerPanes()
@@ -36,7 +50,7 @@ function! SetupDebuggerPanes()
 	exec "wincmd h"
 endfunction
 
-function! LaunchSoarAgentFromConfig(config_file)
+function! CreateSoarAgentFromConfig(config_file)
 	let file_name = a:config_file
 
 python << EOF
@@ -45,15 +59,14 @@ import os
 
 print os.environ["PYTHONPATH"]
 
-from SoarAgent import AgentConfig
-from SoarAgent import SoarAgent
+from VimSoarAgent import VimSoarAgent
 from VimWriter import VimWriter
 
 import vim
 
 writer = VimWriter()
-config = AgentConfig(vim.eval("file_name"))
-agent = SoarAgent(config, writer)
+agent = VimSoarAgent(vim.eval("file_name"), writer)
+agent.connect()
 
 def step(num):
 	agent.agent.RunSelf(num)
@@ -66,7 +79,8 @@ def startstop():
 
 def send_message(msg):
 	if len(msg.strip()) > 0:
-		agent.language_connector.send_message(msg)
+		writer.write("Instr: " + msg, VimWriter.MESSAGES_WIN)
+		agent.connectors["language"].send_message(msg)
 
 def resize_windows():
 	vim.current.window = writer.get_window(VimWriter.DEBUGGER_WIN)
@@ -99,6 +113,18 @@ EOF
 
 endfunction
 
+function! LaunchAi2ThorSimulator()
+python << EOF
+
+from rosiethor import Ai2ThorSimulator, PerceptionConnector
+
+simulator = Ai2ThorSimulator()
+simulator.load()
+
+agent.connectors["perception"] = PerceptionConnector(agent, simulator)
+
+EOF
+endfunction
 
 function! ExecuteUserSoarCommand()
 	call inputsave()
@@ -130,7 +156,6 @@ function! ListRosieMessages(A,L,P)
 	endfor
 	return res
 endfunction
-
 
 function! SendMessageToRosie()
 	call inputsave()

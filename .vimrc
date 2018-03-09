@@ -97,18 +97,3 @@ nnoremap <S-J> :call OpenNextFileInWindow()<CR>
 " Custom file explorer navigation 
 nnoremap <C-E> :call OpenFileInTmuxPane()<CR>
 
-command FO call OpenFileInTmuxPane()
-command -nargs=1 FC call CreateFileInCurrentDirectory(<f-args>)
-command -nargs=1 FRN call RenameFileUnderCursor(<f-args>)
-command FDEL call DeleteFileUnderCursor()
-
-" Mappings for Soar Scripts "
-
-nnoremap <silent> ;prop :call InsertOperatorProposal()<CR>
-nnoremap <silent> ;pref :call InsertSoarPreference()<CR>
-nnoremap <silent> ;app :call InsertOperatorApplication()<CR>
-
-command SRC call AddFileToSoarSource()
-
-nnoremap <C-P> :call FindNextInsert()<CR>
-inoremap <C-P> <ESC>:call FindNextInsert()<CR>

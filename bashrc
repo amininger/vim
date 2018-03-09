@@ -1,4 +1,4 @@
-# Expecting you to define the following environment variable:
+#Expecting you to define the following environment variable:
 # $MY_VIM_DIR
 
 export VIMRC="$MY_VIM_DIR/.vimrc"

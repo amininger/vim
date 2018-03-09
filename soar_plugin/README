@@ -44,10 +44,10 @@ DEFAULT VIM MAPPINGS
 Many commands are ; followed by a shortcode
 This does remap the characters M H U and #, and commands Ctrl+I and Ctrl+P
 
-;al    | Launches the debugger with an agent from a specified config file
-;ar    | Launches the debugger with a rosie agent with a specified name (from rosie/test-agents)
-;ai    | Restarts the agent (using init-soar)
-;ak    | Kills the agent
+;la    | Launches the debugger with an agent from a specified config file
+;lr    | Launches the debugger with a rosie agent with a specified name (from rosie/test-agents)
+;ia    | Restarts the agent (using init-soar)
+;ka    | Kills the agent
 ;add   | Adds the current file to the <cur-dir>_source.soar file to be sourced
 M      | sends a message to the rosie agent
 #      | Execute a custom soar command
