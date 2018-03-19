@@ -66,7 +66,6 @@ import vim
 
 writer = VimWriter()
 agent = VimSoarAgent(vim.eval("file_name"), writer)
-agent.connect()
 
 def step(num):
 	agent.agent.RunSelf(num)
@@ -116,12 +115,16 @@ endfunction
 function! LaunchAi2ThorSimulator()
 python << EOF
 
-from rosiethor import Ai2ThorSimulator, PerceptionConnector
+from rosiethor import Ai2ThorSimulator, PerceptionConnector, ActuationConnector
 
 simulator = Ai2ThorSimulator()
-simulator.load()
 
 agent.connectors["perception"] = PerceptionConnector(agent, simulator)
+agent.connectors["perception"].print_handler = lambda message: writer.write(message)
+agent.connectors["actuation"] = ActuationConnector(agent, simulator)
+agent.connectors["actuation"].print_handler = lambda message: writer.write(message)
+
+simulator.start()
 
 EOF
 endfunction

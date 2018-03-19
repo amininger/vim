@@ -1,5 +1,6 @@
 import sys
 import vim
+import traceback
 
 from string import digits
 from pysoarlib import AgentConnector
@@ -34,6 +35,8 @@ def task_arg_to_string(arg_id):
     elif arg_type == "waypoint":
         wp_id = arg_id.FindByAttribute("id", 0).ConvertToIdentifier()
         return wp_id.FindByAttribute("handle", 0).GetValueAsString()
+    elif arg_type == "concept":
+        return arg_id.GetChildString("handle")
     return "?"
 
 def obj_arg_to_string(obj_id):
@@ -55,7 +58,7 @@ class ActionStackConnector(AgentConnector):
     def __init__(self, agent, writer):
         AgentConnector.__init__(self, agent, print_handler=lambda message: writer.write(message, VimWriter.DEBUGGER_WIN))
 
-        self.print_action = lambda message: self.writer.write(message, VimWriter.ACTIONS_WIN)
+        self.print_action = lambda message: writer.write(message, VimWriter.ACTIONS_WIN)
 
         self.register_output_handler("started-action")
         self.register_output_handler("completed-action")
@@ -88,4 +91,5 @@ class ActionStackConnector(AgentConnector):
             self.print_action(padding + "<" + task_to_string(task_id))
         except:
             self.print_handler("Error Parsing Completed Action")
+            self.print_handler(traceback.format_exc())
         root_id.CreateStringWME("handled", "true")
