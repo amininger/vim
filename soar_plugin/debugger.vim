@@ -225,3 +225,8 @@ function! ControlAi2ThorRobot()
 	endwhile
 endfunction
 
+function! SaveSimulatorState()
+	python if simulator: simulator.save()
+endfunction
+
+

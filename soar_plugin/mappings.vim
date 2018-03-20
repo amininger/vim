@@ -32,7 +32,7 @@ nnoremap ;lr :call LaunchRosieAgent()<CR>
 nnoremap ;lt :call LaunchRosieThorAgent()<CR>
 nnoremap ;ia :python agent.execute_command("init-soar")<CR>
 nnoremap ;ka :python close_debugger()<CR>
-nnoremap ;ra :python reset_agent()<CR>
+nnoremap ;rs :python reset_agent()<CR>
 nnoremap <C-I> :python startstop()<CR>
 nnoremap H :python step(1)<CR>
 nnoremap U :python step(10)<CR>
