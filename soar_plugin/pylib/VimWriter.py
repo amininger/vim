@@ -6,17 +6,28 @@ class VimWriter:
     ACTIONS_WIN = 3
     STATE_WIN = 4
 
+    window_names = { 
+        DEBUGGER_WIN: "_DEBUGGING_WIN_",
+        MESSAGES_WIN: "_MESSAGES_WIN_",
+        ACTIONS_WIN: "_ACTIONS_WIN_",
+        STATE_WIN: "_STATES_WIN_"
+    }
+
+
     def __init__(self):
         self.win_map = {}
         for window in vim.windows:
-            if "debugging" in window.buffer.name:
-                self.win_map[VimWriter.DEBUGGER_WIN] = window
-            elif "messages" in window.buffer.name:
-                self.win_map[VimWriter.MESSAGES_WIN] = window
-            elif "actions" in window.buffer.name:
-                self.win_map[VimWriter.ACTIONS_WIN] = window
-            elif "state" in window.buffer.name:
-                self.win_map[VimWriter.STATE_WIN] = window
+            for win_id, win_name in VimWriter.window_names.iteritems():
+                if win_name in window.buffer.name:
+                    self.win_map[win_id] = window
+                    break
+
+    def clear_all_windows(self):
+        for window in vim.windows:
+            for name in VimWriter.window_names.values():
+                if name in window.buffer.name:
+                    del window.buffer[:]
+                    break
 
     def write(self, message, win_num=DEBUGGER_WIN, clear=False):
         window = self.win_map[win_num]

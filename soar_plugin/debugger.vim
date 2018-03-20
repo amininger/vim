@@ -8,7 +8,8 @@ function! LaunchSoarAgent()
 	echo config_file
 	call inputrestore()
 	call SetupDebuggerPanes()
-	call CreateSoarAgentFromConfig(config_file)
+	call SetupAgentMethods(config_file)
+	python agent = create_agent()
 	python agent.connect()
 endfunction
 
@@ -19,7 +20,8 @@ function! LaunchRosieAgent()
 	echo config_file
 	call inputrestore()
 	call SetupDebuggerPanes()
-	call CreateSoarAgentFromConfig(config_file)
+	call SetupAgentMethods(config_file)
+	python agent = create_agent()
 	python agent.connect()
 endfunction
 
@@ -30,56 +32,39 @@ function! LaunchRosieThorAgent()
 	echo config_file
 	call inputrestore()
 	call SetupDebuggerPanes()
-	call CreateSoarAgentFromConfig(config_file)
+	call SetupAgentMethods(config_file)
+	python agent = create_agent()
 	call LaunchAi2ThorSimulator()
 	python agent.connect()
 endfunction
 
 function! SetupDebuggerPanes()
-	exec "e debugging.soar"
+	exec "e _DEBUGGING_WIN_"
+	exec "setlocal buftype=nofile"
+	exec "setlocal bufhidden=hide"
+	exec "setlocal noswapfile"
 	call feedkeys("ggVGd")
 	exec "vs"
 	exec "wincmd l"
-	exec "e messages"
+	exec "e _MESSAGES_WIN_"
+	exec "setlocal buftype=nofile"
+	exec "setlocal bufhidden=hide"
+	exec "setlocal noswapfile"
 	exec "sp"
 	exec "wincmd j"
-	exec "e actions"
+	exec "e _ACTIONS_WIN_"
+	exec "setlocal buftype=nofile"
+	exec "setlocal bufhidden=hide"
+	exec "setlocal noswapfile"
 	exec "sp"
 	exec "wincmd j"
-	exec "e states"
+	exec "e _STATES_WIN_"
+	exec "setlocal buftype=nofile"
+	exec "setlocal bufhidden=hide"
+	exec "setlocal noswapfile"
 	exec "wincmd h"
-endfunction
-
-function! CreateSoarAgentFromConfig(config_file)
-	let file_name = a:config_file
 
 python << EOF
-import sys
-import os
-
-print os.environ["PYTHONPATH"]
-
-from VimSoarAgent import VimSoarAgent
-from VimWriter import VimWriter
-
-import vim
-
-writer = VimWriter()
-agent = VimSoarAgent(vim.eval("file_name"), writer)
-
-def step(num):
-	agent.agent.RunSelf(num)
-
-def startstop():
-	if agent.is_running:
-		agent.stop()
-	else:
-		agent.start()
-
-def send_message(msg):
-	if len(msg.strip()) > 0:
-		writer.write("Instr: " + msg, VimWriter.MESSAGES_WIN)
-		agent.connectors["language"].send_message(msg)
 
 def resize_windows():
 	vim.current.window = writer.get_window(VimWriter.DEBUGGER_WIN)
@@ -101,7 +86,46 @@ def resize_windows():
 
 	vim.current.window = writer.get_window(VimWriter.DEBUGGER_WIN)
 
-def kill_agent():
+EOF
+endfunction
+
+function! SetupAgentMethods(config_file)
+	let file_name = a:config_file
+
+python << EOF
+import sys
+import os
+
+from VimSoarAgent import VimSoarAgent
+from VimWriter import VimWriter
+
+import vim
+
+writer = VimWriter()
+config_filename = vim.eval("file_name")
+
+def create_agent():
+	return VimSoarAgent(config_filename, writer)
+
+def step(num):
+	agent.agent.RunSelf(num)
+
+def startstop():
+	if agent.is_running:
+		agent.stop()
+	else:
+		agent.start()
+
+def send_message(msg):
+	if len(msg.strip()) > 0:
+		writer.write("Instr: " + msg, VimWriter.MESSAGES_WIN)
+		agent.connectors["language"].send_message(msg)
+
+def reset_agent():
+	writer.clear_all_windows()
+	agent.reset()
+
+def close_debugger():
 	agent.kill()
 	while len(vim.windows) > 1:
 		vim.command("q!")
@@ -127,6 +151,11 @@ agent.connectors["actuation"].print_handler = lambda message: writer.write(messa
 simulator.start()
 
 EOF
+endfunction
+
+function! ResetAgent()
+	python 
+
 endfunction
 
 function! ExecuteUserSoarCommand()
@@ -169,5 +198,30 @@ endfunction
 
 function! ExecuteSoarCommand(cmd)
 	python agent.execute_command(vim.eval("a:cmd"))
+endfunction
+
+function! ControlAi2ThorRobot()
+	let key = getchar()
+	"Loop until either ESC or X is pressed
+	while key != 27 && key != 120
+		if key == 119 "W
+			python if simulator: simulator.exec_simple_command("MoveAhead")
+		elseif key == 97 "A
+			python if simulator: simulator.exec_simple_command("MoveLeft")
+		elseif key == 115 "S
+			python if simulator: simulator.exec_simple_command("MoveBack")
+		elseif key == 100 "D
+			python if simulator: simulator.exec_simple_command("MoveRight")
+		elseif key == 113 "Q
+			python if simulator: simulator.exec_simple_command("RotateLeft")
+		elseif key == 101 "E
+			python if simulator: simulator.exec_simple_command("RotateRight")
+		elseif key == 114 "R
+			python if simulator: simulator.exec_simple_command("LookUp")
+		elseif key == 102 "F
+			python if simulator: simulator.exec_simple_command("LookDown")
+		endif
+		let key = getchar()
+	endwhile
 endfunction
 
