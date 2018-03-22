@@ -107,8 +107,13 @@ config_filename = vim.eval("file_name")
 def create_agent():
 	return VimSoarAgent(config_filename, writer)
 
+def show_stack_info():
+	stack = agent.agent.ExecuteCommandLine("p --stack", False)
+	writer.write(stack, VimWriter.STATE_WIN, True)
+
 def step(num):
 	agent.agent.RunSelf(num)
+	show_stack_info()
 
 def startstop():
 	if agent.is_running:
