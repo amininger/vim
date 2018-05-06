@@ -1,4 +1,9 @@
-if !has('python')
+if has('python')
+	command! -nargs=1 Python python <args>
+elseif has('python3')
+	command! -nargs=1 Python python3 <args>
+else
+	echo 'Error: soar plugin requires +python or +python3'
 	finish
 endif
 
@@ -9,7 +14,7 @@ function! LaunchSoarAgent()
 	call inputrestore()
 	call SetupDebuggerPanes()
 	call CreateSoarAgentFromConfig(config_file)
-	python agent.connect()
+	Python agent.connect()
 endfunction
 
 function! LaunchRosieAgent()
@@ -20,7 +25,7 @@ function! LaunchRosieAgent()
 	call inputrestore()
 	call SetupDebuggerPanes()
 	call CreateSoarAgentFromConfig(config_file)
-	python agent.connect()
+	Python agent.connect()
 endfunction
 
 function! LaunchRosieThorAgent()
@@ -32,7 +37,7 @@ function! LaunchRosieThorAgent()
 	call SetupDebuggerPanes()
 	call CreateSoarAgentFromConfig(config_file)
 	call LaunchAi2ThorSimulator()
-	python agent.connect()
+	Python agent.connect()
 endfunction
 
 function! SetupDebuggerPanes()
@@ -53,11 +58,9 @@ endfunction
 function! CreateSoarAgentFromConfig(config_file)
 	let file_name = a:config_file
 
-python << EOF
+Python << EOF
 import sys
 import os
-
-print os.environ["PYTHONPATH"]
 
 from VimSoarAgent import VimSoarAgent
 from VimWriter import VimWriter
@@ -65,7 +68,7 @@ from VimWriter import VimWriter
 import vim
 
 writer = VimWriter()
-agent = VimSoarAgent(vim.eval("file_name"), writer)
+agent = VimSoarAgent(writer, config_filename=vim.eval("file_name"))
 agent.connect()
 
 def step(num):
@@ -114,7 +117,7 @@ EOF
 endfunction
 
 function! LaunchAi2ThorSimulator()
-python << EOF
+Python << EOF
 
 from rosiethor import Ai2ThorSimulator, PerceptionConnector
 
@@ -130,7 +133,7 @@ function! ExecuteUserSoarCommand()
 	call inputsave()
 	let cmd = input('Enter command: ')
 	call inputrestore()
-	python agent.execute_command(vim.eval("cmd"))
+	Python agent.execute_command(vim.eval("cmd"))
 endfunction
 
 function! SourceSoarFile()
@@ -161,10 +164,10 @@ function! SendMessageToRosie()
 	call inputsave()
 	let msg = input('Enter message: ', "", "customlist,ListRosieMessages")
 	call inputrestore()
-	python send_message(vim.eval("msg"))
+	Python send_message(vim.eval("msg"))
 endfunction
 
 function! ExecuteSoarCommand(cmd)
-	python agent.execute_command(vim.eval("a:cmd"))
+	Python agent.execute_command(vim.eval("a:cmd"))
 endfunction
 

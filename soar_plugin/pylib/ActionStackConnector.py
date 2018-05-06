@@ -57,8 +57,8 @@ class ActionStackConnector(AgentConnector):
 
         self.print_action = lambda message: self.writer.write(message, VimWriter.ACTIONS_WIN)
 
-        self.register_output_handler("started-action")
-        self.register_output_handler("completed-action")
+        self.add_output_command("started-action")
+        self.add_output_command("completed-action")
 
     def on_init_soar(self):
         pass
@@ -66,10 +66,10 @@ class ActionStackConnector(AgentConnector):
     def on_input_phase(self, input_link):
         pass
 
-    def on_output_event(self, att_name, root_id):
-        if att_name == "started-action":
+    def on_output_event(self, command_name, root_id):
+        if command_name == "started-action":
             self.process_started_action(root_id)
-        elif att_name == "completed-action":
+        elif command_name == "completed-action":
             self.process_completed_action(root_id)
 
     def process_started_action(self, root_id):

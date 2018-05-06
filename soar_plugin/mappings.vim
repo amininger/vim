@@ -30,17 +30,17 @@ inoremap <C-P> <ESC>:call FindNextInsert()<CR>
 nnoremap ;la :call LaunchSoarAgent()<CR>
 nnoremap ;lr :call LaunchRosieAgent()<CR>
 nnoremap ;lt :call LaunchRosieThorAgent()<CR>
-nnoremap ;ia :python agent.execute_command("init-soar")<CR>
-nnoremap ;ka :python kill_agent()<CR>
-nnoremap <C-I> :python startstop()<CR>
-nnoremap H :python step(1)<CR>
-nnoremap U :python step(10)<CR>
-nnoremap ;re :python agent.execute_command("run 1 -e")<CR>
+nnoremap ;ia :Python agent.execute_command("init-soar")<CR>
+nnoremap ;ka :Python kill_agent()<CR>
+nnoremap <C-I> :Python startstop()<CR>
+nnoremap H :Python step(1)<CR>
+nnoremap U :Python step(10)<CR>
+nnoremap ;re :Python agent.execute_command("run 1 -e")<CR>
 
 nnoremap # :call ExecuteUserSoarCommand()<CR>
 nnoremap M :call SendMessageToRosie()<CR>
 
-nnoremap ;mm :python agent.execute_command("matches")<CR>
+nnoremap ;mm :Python agent.execute_command("matches")<CR>
 
 " source production
 nnoremap ;sp :call ExecuteSoarCommand(GetCurrentSoarRuleBody())<CR>
