@@ -1,31 +1,22 @@
 import sys
-import vim
-
-from threading import Thread
-import time
-
-import Python_sml_ClientInterface as sml
 
 from pysoarlib import SoarAgent
 
-from VimLanguageConnector import VimLanguageConnector
-from ActionStackConnector import ActionStackConnector
 from VimWriter import VimWriter
-
-current_time_ms = lambda: int(round(time.time() * 1000))
 
 class VimSoarAgent(SoarAgent):
     def __init__(self, writer, config_filename=None):
+        self.vim_writer = writer
         SoarAgent.__init__(self, config_filename=config_filename, 
-                print_handler = lambda message: writer.write(message, VimWriter.DEBUGGER_WIN),
+                print_handler = lambda message: writer.write(message, VimWriter.MAIN_PANE, clear=False, scroll=True),
                 spawn_debugger=False, write_to_stdout=True)
 
-        if self.messages_file != None:
-            with open(self.messages_file, 'r') as f:
-                vim.command("let g:rosie_messages = [\"" + "\",\"".join([ line.rstrip('\n') for line in f.readlines()]) + "\"]")
+    def update_debugger_info(self):
+        cur_state = self.agent.ExecuteCommandLine("p <s>", False)
+        self.vim_writer.write(cur_state, VimWriter.SIDE_PANE_TOP, clear=True, scroll=False)
+        prefs = self.agent.ExecuteCommandLine("preferences <s> operator --names", False)
+        self.vim_writer.write(prefs, VimWriter.SIDE_PANE_MID, clear=True, scroll=False)
+        stack = self.agent.ExecuteCommandLine("p --stack", False)
+        self.vim_writer.write(stack, VimWriter.SIDE_PANE_BOT, clear=True, scroll=False)
 
-        self.connectors["language"] = VimLanguageConnector(self, writer)
-        self.connectors["language"].register_message_callback(lambda message: writer.write(message, VimWriter.MESSAGES_WIN))
-
-        self.connectors["action_stack"] = ActionStackConnector(self, writer)
 
