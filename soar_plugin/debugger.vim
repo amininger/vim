@@ -7,11 +7,12 @@ else
 	finish
 endif
 
-function! LaunchSoarAgent()
-	call inputsave()
-	let config_file = input('Enter config file: ', "", "file")
-	echo config_file
-	call inputrestore()
+function! OpenSoarDebugger(...)
+	let config_file = ""
+	if a:0 == 1
+		let config_file = a:1
+	endif
+	echom config_file
 	call SetupDebuggerPanes()
 	call SetupAgentMethods()
 	Python agent = VimSoarAgent(writer, config_filename=vim.eval("config_file"))
@@ -84,7 +85,7 @@ def step(num):
 	agent.agent.RunSelf(num)
 	agent.update_debugger_info()
 
-def reset_agent():
+def reset_debugger():
 	writer.clear_all_windows()
 	agent.reset()
 
@@ -107,11 +108,8 @@ function! ExecuteUserSoarCommand()
 	Python agent.update_debugger_info()
 endfunction
 
-function! SourceSoarFile()
-	call inputsave()
-	let filename = input('Enter soar file name: ', "", "file")
-	call inputrestore()
-	call ExecuteSoarCommand("source ".filename)
+function! SourceSoarFile(filename)
+	call ExecuteSoarCommand("source ".a:filename)
 endfunction
 
 function! ExecuteSoarCommand(cmd)

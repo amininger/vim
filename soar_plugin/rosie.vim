@@ -1,6 +1,6 @@
 """" Rosie Specific Functionality """"
 
-function! LaunchRosieAgent()
+function! OpenRosieDebugger()
 	call inputsave()
 	let agent_name = input('Enter config file: ', 'aaai18eval')
 	let config_file = $ROSIE_HOME."/test-agents/".agent_name."/agent/rosie.".agent_name.".config"
@@ -13,7 +13,7 @@ function! LaunchRosieAgent()
 	Python agent.connect()
 endfunction
 
-function! LaunchRosieThorAgent()
+function! OpenRosieThorDebugger()
 	call inputsave()
 	let agent_name = input('Enter config file: ', 'ai2thor')
 	let config_file = $ROSIE_HOME."/test-agents/".agent_name."/agent/rosie.".agent_name.".config"

@@ -4,12 +4,11 @@ Written: Summer 2017
 
 Purpose: This plugin is to integrate the soar debugger within a vim environment.
   It will mimic the soar debugger layout and allow normal debugging operations.
-  It also provides the ability to integrate with editing soar files and being able to 
-    seamlessly interleave writing/editing soar rules while the agent is running
+  The big benefit is interleaving editing and testing soar agents, 
+	where you can edit and reload soar rules while the agent is running 
 
   This plugin also has a few features specific to the soargroup Rosie project 
     
-
 ===================================================
 DIRECTORY STRUCTURE
 
@@ -25,60 +24,32 @@ pylib: contains python SML code used to interface with the soar debugger
 RUNNING THE EXAMPLE AGENT (Basic Tutorial)
 
 1. Open vim in the current (soar_plugin) directory
-2. Run the :START command
-3. It will prompt for a config file. Enter example.config
+2. Run the command :OpenDebugger example.config
    This will open the debugger window layout and put the agent in a ready state
-4. Type # to bring up a soar prompt, then enter 'p s1' to print the top-state
-5. Type H. This should run 1 DC and do the init-agent operator
-6. Move the cursor to the O1 identifier and type ;p2, this will print O1 to a depth of 2
-7. Type ;mm which will run the matches command, showing which rules match
-8. Move the cursor to the counting-agent*apply*init-agent rule name and type ;pr
+3. Type # to bring up a soar prompt, then enter 'p s1' to print the top-state
+4. Type H. This should run 1 DC and do the init-agent operator
+5. Move the cursor to the O1 identifier and type ;p2, this will print O1 to a depth of 2
+6. Type ;ma which will run the matches command, showing which rules match
+7. Move the cursor to the counting-agent*apply*init-agent rule name and type ;pr
    This will print the production with the rule name under the cursor
-9. Move the cursor inside the printed production and type ;mp
+8. Move the cursor inside the printed production and type ;mp
    This will show why the production currently matches
-10. Type U which will run the agent 10 decision cycles (it should count from 1-10)
-11. Type :STOP to close the debugger
+9. Type U which will run the agent 10 decision cycles (it should count from 1-10)
+10. Type :CloseDebugger to close the debugger
 
 ==================================================
-DEFAULT VIM MAPPINGS
-Many commands are ; followed by a shortcode
-This does remap the characters M H U and #, and commands Ctrl+I and Ctrl+P
+DEBUGGER COMMANDS
 
-;la    | Launches the debugger with an agent from a specified config file
-;lr    | Launches the debugger with a rosie agent with a specified name (from rosie/test-agents)
-;ia    | Restarts the agent (using init-soar)
-;ka    | Kills the agent
-;add   | Adds the current file to the <cur-dir>_source.soar file to be sourced
-M      | sends a message to the rosie agent
-#      | Execute a custom soar command
+OpenDebugger <config-file>  # Launch the debugger
+							# You can pass an optional <config-file> to use to initialize the agent
+ResetDebugger               # Complete destroys and restarts the agent from a clean state (discards learned rules)
+CloseDebugger               # Closes the debugger and deletes the agent
 
-Ctrl+I | Start/Stop the agent running
-H      | Run 1 decision cycle
-U      | Run 10 decision cycles
-;re    | Run 1 elaboration cycle (run 1 -e)
+SourceCurrentFile           # The currently running agent will source the current file
+SourceSoarFile <filename>   # The currently running agent will source the specified file
 
-;dp | Delete the production the cursor is inside
-;yp | Yank (to buffer) the production the cursor is on
-;yr | Yank (to buffer) the rule name the cursor is on
-;cp | Copy (to clipboard) the production the cursor is on
-;cr | Copy (to clipboard) the rule name the cursor is on
-;sp | Source the production the cursor is on
-;sc | Source the current file
-;sf | Source a specified file
-;ep | Excises the production the cursor is on
-;er | Excises the production with the rule name the cursor is on
-;mm | Runs the matches command
-;mp | Runs the matches command with the production the cursor is on
-;mr | Runs the matches command with the rule name the cursor is on
-;pr | Prints the production with the name under the cursor
-;p# | Print the current identifier to # depth (;p2 ;p4 ...)
-
-;tprop | Insert an operator proposal production template
-;tpref | Insert an operator preference production template
-;trej  | Insert an operator rejection production template
-;tapp  | Insert an operator application production template
-;telab | Insert a state elaboration production template
-Ctrl+P | Goes to the next insertion point in a template (marked by #!#)
+AddFileToSource             # Looks for <dir>_source.soar and appends a source command for the current file
+InsertTemplate <template>   # Inserts a soar template of the given template name into the current file
 
 ==================================================
 CONFIG FILE OPTIONS
@@ -90,6 +61,46 @@ verbose = <bool>          | If true, prints extra information when sourcing the 
 watch-level = <int>       | The watch level to print information at (default=1)
 spawn-debugger = <bool>   | If true, will spawn the soar debugger externally (default=false)
 write-to_stdout = <bool>  | If true, will print all output to std out (default=false) 
-write-log = <bool>        | If true, will write all soar output to a file called rosie.log
+write-log = <bool>        | If true, will write all soar output to a file called agent-log.txt
 
-messages-file = <filename> | a file containing possible chat messages to send to Rosie
+==================================================
+DEFAULT VIM MAPPINGS
+Many commands are ; followed by a shortcode
+This does remap the characters H U and #, and commands Ctrl+P
+To disable this, define the following global variable in your vimrc
+	let g:disable_soar_plugin_mappings = 1
+
+#      | Execute a custom soar command
+
+""" Running the Agent
+H      | Run 1 decision cycle
+U      | Run 10 decision cycles
+;re    | Run 1 elaboration cycle (run 1 -e)
+
+""" PRINTING
+;pr | Prints the full production [cursor is on rule name]
+;p# | Print the current identifier to # depth (;p2 ;p4 ...) [cursor is on identifier]
+
+""" COPYING
+;yp | Yank (to buffer) the current production [cursor is inside production]
+;yr | Yank (to buffer) the current rule name [cursor is on rule name]
+;cp | Copy (to clipboard) the current production [cursor is inside production]
+;cr | Copy (to clipboard) the current rule name [cursor is on rule name]
+
+""" DELETING
+;dp | Delete the current production [cursor is inside production]
+
+""" SOURCING
+;sp | Source the current production [cursor is inside production]
+
+""" EXCISING
+;ep | Excises the current production [cursor is inside production]
+;er | Excises the current rule [cursor is on rule name]
+
+""" MATCHING
+;ma | Runs the matches command
+;mp | Runs the matches command with the current production [cursor is inside production]
+;mr | Runs the matches command with the current rule name [cursor is on rule name]
+
+Ctrl+P | Goes to the next insertion point in a template (marked by #!#)
+

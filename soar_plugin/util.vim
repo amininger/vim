@@ -1,4 +1,3 @@
-
 " Look for a source file in the current directory (named <dir>_source.soar)
 " Append a soar command to source the current file to that source file
 function! AddFileToSoarSource()

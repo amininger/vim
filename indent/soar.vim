@@ -1,12 +1,11 @@
-
 " Vim indent file
 " Language:    Soar
 " Maintainer:  Aaron
 
-if exists("b:did_indent")
+if exists("b:set_soar_indent")
 	finish
 endif
-let b:did_indent = 1
+let b:set_soar_indent = 1
 
 setlocal indentexpr=GetSoarIndent(v:lnum)
 setlocal indentkeys&
