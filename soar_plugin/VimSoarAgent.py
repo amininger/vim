@@ -5,11 +5,11 @@ from pysoarlib import SoarAgent
 from VimWriter import VimWriter
 
 class VimSoarAgent(SoarAgent):
-    def __init__(self, writer, config_filename=None):
+    def __init__(self, writer, config_filename=None, **kwargs):
         self.vim_writer = writer
         SoarAgent.__init__(self, config_filename=config_filename, 
                 print_handler = lambda message: writer.write(message, VimWriter.MAIN_PANE, clear=False, scroll=True),
-                spawn_debugger=False, write_to_stdout=True)
+                spawn_debugger=False, write_to_stdout=True, **kwargs)
 
     def update_debugger_info(self):
         cur_state = self.agent.ExecuteCommandLine("p <s>", False)

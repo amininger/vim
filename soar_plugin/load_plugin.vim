@@ -1,4 +1,4 @@
-let $PYTHONPATH.=":".$MY_VIM_DIR."/soar_plugin/pylib:".$SOAR_HOME
+let $PYTHONPATH.=":".$MY_VIM_DIR."/soar_plugin/:".$SOAR_HOME
 
 " Contains general soar utility functions
 so $MY_VIM_DIR/soar_plugin/util.vim

@@ -97,3 +97,7 @@ nnoremap <S-J> :call OpenNextFileInWindow()<CR>
 " Custom file explorer navigation 
 nnoremap <C-E> :call OpenFileInTmuxPane()<CR>
 
+" Mappings for the vim debugger and rosie
+nnoremap ;lr :call LaunchRosieAgent()<CR>
+nnoremap ;lt :call LaunchRosieThorAgent()<CR>
+nnoremap M :call SendMessageToRosie()<CR>

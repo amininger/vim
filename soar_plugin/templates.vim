@@ -1,5 +1,30 @@
 """"""""""""""" FUNCTIONS """"""""""""""""""
 
+function! ListSoarTemplates(A,L,P)
+	let templatedir = $MY_VIM_DIR."/soar_plugin/templates/"
+	let templates = split(globpath(templatedir, '*'), '\n')
+	let res = []
+	let pattern = "^".a:A
+	for template_filename in templates
+		let template_name = fnamemodify(template_filename, ':t')
+		if template_name =~ pattern
+			call add(res, template_name)
+		endif
+	endfor
+	return res
+endfunction
+
+" Inserts the given template 
+function! InsertSoarTemplate(templateFile)
+  execute("r ".$MY_VIM_DIR."/soar_plugin/templates/".a:templateFile)
+
+  let op_name = substitute(expand('%:t'), "\.soar", "", "g")
+  execute("%s/__OP__NAME__/".op_name."/g")
+
+  let state_name = expand('%:p:h:t')
+  execute("%s/__STATE__NAME__/".state_name."/g")
+endfunction
+
 " Will search file for #!# and remove them and go to insert mode
 function! FindNextInsert()
 	if search("#!#") != 0
@@ -8,80 +33,3 @@ function! FindNextInsert()
 	endif
 endfunction
 
-
-function! InsertSoarPreference(...)
-  let directory = expand('%:p:h:t')
-  let filename = substitute(expand('%:t'), "\.soar", "", "g")
-  let templateFile = $MY_VIM_DIR."/soar_plugin/templates/preference"
-
-  execute("r ".templateFile)
-
-  let state_name = directory
-  if a:0 > 1
-    let state_name = a:2
-  endif
-
-  execute("%s/__STATE__NAME__/".state_name."/g")
-endfunction
-	
-function! InsertOperatorProposal(...)
-  let directory = expand('%:p:h:t')
-  let filename = substitute(expand('%:t'), "\.soar", "", "g")
-  let templateFile = $MY_VIM_DIR."/soar_plugin/templates/proposal"
-
-  execute("r ".templateFile)
-
-  let op_name = filename
-  if a:0 > 0
-    let op_name = a:1
-  endif
-
-  let state_name = directory
-  if a:0 > 1
-    let state_name = a:2
-  endif
-
-  execute("%s/__STATE__NAME__/".state_name."/g")
-  execute("%s/__OP__NAME__/".op_name."/g")
-endfunction
-
-function! InsertOperatorRejection(...)
-  let templateFile = $MY_VIM_DIR."/soar_plugin/templates/reject"
-  execute("r ".templateFile)
-endfunction
-	
-function! InsertOperatorApplication(...)
-  let directory = expand('%:p:h:t')
-  let filename = substitute(expand('%:t'), "\.soar", "", "g")
-  let templateFile = $MY_VIM_DIR."/soar_plugin/templates/application"
-
-  execute("r ".templateFile)
-
-  let op_name = filename
-  if a:0 > 0
-    let op_name = a:1
-  endif
-
-  let state_name = directory
-  if a:0 > 1
-    let state_name = a:2
-  endif
-
-  execute("%s/__STATE__NAME__/".state_name."/g")
-  execute("%s/__OP__NAME__/".op_name."/g")
-endfunction
-	
-function! InsertStateElaboration(...)
-  let directory = expand('%:p:h:t')
-  let filename = substitute(expand('%:t'), "\.soar", "", "g")
-  let templateFile = $MY_VIM_DIR."/soar_plugin/templates/elaboration"
-
-  execute("r ".templateFile)
-
-  let state_name = directory
-  if a:0 > 1
-    let state_name = a:2
-  endif
-
-  execute("%s/__STATE__NAME__/".state_name."/g")
-endfunction
