@@ -1,3 +1,4 @@
+""" Used by the Rosie Agent to display the chat history in the vim debugger """
 import sys
 import vim
 

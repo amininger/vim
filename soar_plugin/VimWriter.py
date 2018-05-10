@@ -1,6 +1,7 @@
 import vim
 
 class VimWriter:
+    """ Used to write to different vim window panes """
     MAIN_PANE = 1
     SIDE_PANE_TOP = 2
     SIDE_PANE_MID = 3
@@ -22,26 +23,33 @@ class VimWriter:
                     break
 
     def clear_all_windows(self):
+        """ Deletes the contents of all debugger windows """
         for window in vim.windows:
             for name in VimWriter.window_names.values():
                 if name in window.buffer.name:
                     del window.buffer[:]
                     break
 
-    def write(self, message, win_num=MAIN_PANE, clear=False, scroll=True):
-        window = self.win_map[win_num]
+    def write(self, message, window=MAIN_PANE, clear=False, scroll=True):
+        """ appends the given message onto the given window
+
+        clear, True will delete the existing window contents before appending
+        scroll, True will scroll the window to the bottom after appending
+        """
+        window = self.win_map[window]
         if clear:
             del window.buffer[:]
         for line in message.split("\n"):
             window.buffer.append(line)
         if scroll:
             window.cursor = (len(window.buffer), 0)
-        if win_num != VimWriter.MAIN_PANE:
+        if window != VimWriter.MAIN_PANE:
             prev_win = vim.current.window
             vim.current.window = window
             vim.command("redraw!")
             vim.current.window = prev_win
 
-    def get_window(self, win_num):
-        return self.win_map[win_num]
+    def get_window(self, window):
+        """ Returns a reference to the vim window with the given identifier """
+        return self.win_map[window]
 

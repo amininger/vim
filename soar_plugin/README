@@ -41,7 +41,7 @@ RUNNING THE EXAMPLE AGENT (Basic Tutorial)
 DEBUGGER COMMANDS
 
 OpenDebugger <config-file>  # Launch the debugger
-							# You can pass an optional <config-file> to use to initialize the agent
+							# You can pass an optional <config-file> to use to initialize the agent (details below)
 ResetDebugger               # Complete destroys and restarts the agent from a clean state (discards learned rules)
 CloseDebugger               # Closes the debugger and deletes the agent
 
@@ -66,8 +66,8 @@ write-log = <bool>        | If true, will write all soar output to a file called
 ==================================================
 DEFAULT VIM MAPPINGS
 Many commands are ; followed by a shortcode
-This does remap the characters H U and #, and commands Ctrl+P
-To disable this, define the following global variable in your vimrc
+This does remap the keyboard shortcuts for H U # and Ctrl+P
+To disable these shortcuts, define the following global variable in your vimrc
 	let g:disable_soar_plugin_mappings = 1
 
 #      | Execute a custom soar command

@@ -1,3 +1,4 @@
+""" Initializes a Rosie agent in the soar vim debugger and will display chat and action info in different panes """
 import sys
 import vim
 

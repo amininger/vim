@@ -1,3 +1,4 @@
+""" Creates a soar agent to use in the vim debugger and displays common state info """
 import sys
 
 from pysoarlib import SoarAgent

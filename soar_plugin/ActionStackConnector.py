@@ -1,3 +1,4 @@
+""" Used by the Rosie Agent to print information about the actions Rosie is performing """
 import sys
 import vim
 import traceback
