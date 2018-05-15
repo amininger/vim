@@ -24,7 +24,6 @@ function! SetupDebuggerPanes()
 	exec "setlocal buftype=nofile"
 	exec "setlocal bufhidden=hide"
 	exec "setlocal noswapfile"
-	call feedkeys("ggVGd")
 	exec "vs"
 	exec "wincmd l"
 	exec "e __SIDE_PANE_TOP__"
@@ -44,7 +43,6 @@ function! SetupDebuggerPanes()
 	exec "setlocal bufhidden=hide"
 	exec "setlocal noswapfile"
 	exec "wincmd h"
-
 Python << EOF
 
 def resize_windows():
@@ -101,9 +99,7 @@ EOF
 endfunction
 
 function! ExecuteUserSoarCommand()
-	call inputsave()
 	let cmd = input('Enter command: ')
-	call inputrestore()
 	Python agent.execute_command(vim.eval("cmd"))
 	Python agent.update_debugger_info()
 endfunction

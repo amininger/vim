@@ -1,11 +1,8 @@
 """" Rosie Specific Functionality """"
 
 function! OpenRosieDebugger()
-	call inputsave()
-	let agent_name = input('Enter config file: ', 'aaai18eval')
+	let agent_name = input('Enter agent name: ', 'H-layout')
 	let config_file = $ROSIE_HOME."/test-agents/".agent_name."/agent/rosie.".agent_name.".config"
-	echo config_file
-	call inputrestore()
 	call SetupDebuggerPanes()
 	call SetupAgentMethods()
 	Python from VimRosieAgent import VimRosieAgent
@@ -14,11 +11,8 @@ function! OpenRosieDebugger()
 endfunction
 
 function! OpenRosieThorDebugger()
-	call inputsave()
-	let agent_name = input('Enter config file: ', 'ai2thor')
+	let agent_name = input('Enter agent name: ', 'ai2thor')
 	let config_file = $ROSIE_HOME."/test-agents/".agent_name."/agent/rosie.".agent_name.".config"
-	echo config_file
-	call inputrestore()
 	call SetupDebuggerPanes()
 	call SetupAgentMethods()
 	Python from VimRosieAgent import VimRosieAgent
@@ -69,9 +63,7 @@ def send_message(msg):
 EOF
 
 function! SendMessageToRosie()
-	call inputsave()
 	let msg = input('Enter message: ', "", "customlist,ListRosieMessages")
-	call inputrestore()
 	Python send_message(vim.eval("msg"))
 endfunction
 

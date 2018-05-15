@@ -12,6 +12,7 @@ command! -nargs=0 AddFileToSource :call AddFileToSoarSource()
 command! -nargs=? -complete=file OpenDebugger :call OpenSoarDebugger(<f-args>)
 command! -nargs=0 CloseDebugger :Python close_debugger()
 command! -nargs=0 ResetDebugger :Python reset_debugger()
+command! -nargs=0 RosieDebugger :call OpenRosieDebugger()
 
 " Source the current file into the running soar agent (debugger.vim)
 command! -nargs=0 SourceCurrentFile :call ExecuteSoarCommand("source ".expand('%:p'))

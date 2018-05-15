@@ -36,6 +36,7 @@ class VimWriter:
         clear, True will delete the existing window contents before appending
         scroll, True will scroll the window to the bottom after appending
         """
+        message = message.strip()
         window = self.win_map[window]
         if clear:
             del window.buffer[:]
