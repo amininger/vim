@@ -16,6 +16,7 @@ Plugin 'VundleVim/Vundle.vim'
 
 Plugin 'christoomey/vim-tmux-navigator'
 
+Plugin 'file:///home/mininger/.vim/bundle/vim-soar-plugin'
 
 call vundle#end()
 
@@ -86,7 +87,6 @@ set hlsearch
 
 so $MY_VIM_DIR/scripts
 so $MY_VIM_DIR/netrw_extensions.vim
-so $MY_VIM_DIR/soar_plugin/load_plugin.vim
 
 " Mappings for scripting functions
 
@@ -98,6 +98,4 @@ nnoremap <S-J> :call OpenNextFileInWindow()<CR>
 nnoremap <C-E> :call OpenFileInTmuxPane()<CR>
 
 " Mappings for the vim debugger and rosie
-nnoremap ;lr :call LaunchRosieAgent()<CR>
-nnoremap ;lt :call LaunchRosieThorAgent()<CR>
 nnoremap M :call SendMessageToRosie()<CR>
