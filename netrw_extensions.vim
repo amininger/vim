@@ -7,6 +7,7 @@ command -nargs=1 FRN call RenameFileUnderCursor(<f-args>)
 command FDEL call DeleteFileUnderCursor()
 command DDEL call DeleteDirUnderCursor()
 command GETDIR call GetCurrentExplorerDirectory()
+command GSF call GenerateSoarSourceFile()
 
 let g:netrw_liststyle=3
 let g:netrw_fastbrowse=0
@@ -142,7 +143,6 @@ function! OpenFileInTmuxPane()
   execute opencmd | redraw!
 endfunction
 
-
 """""
 " CreateFileInCurrentDirectory(filename:string)
 "   Creates a file with the given name in the 
@@ -275,3 +275,45 @@ function! DeleteDirUnderCursor()
   call feedkeys("kr")
 endfunction
 
+Python << EOF
+
+from pathlib import Path
+
+def generate_soar_source_file(dir_name):
+	cur_dir = Path(dir_name)
+	if not cur_dir.is_dir():
+		return
+
+	source_file = cur_dir.joinpath(Path(cur_dir.name + "_source.soar"))
+	if not source_file.exists():
+		source_file.touch()
+
+	dirs =  sorted([ d.name for d in cur_dir.iterdir() if d.is_dir() ])
+	files = sorted([ f.name for f in cur_dir.iterdir() if f.is_file() and f.suffix == ".soar" and f != source_file ])
+
+	source_file_contents = []
+	for f in files:
+		source_file_contents.append("source " + f + "\n")
+
+	for d in dirs:
+		source_file_contents.append("pushd " + d)
+		source_file_contents.append("source " + d + "_source.soar")
+		source_file_contents.append("popd\n")
+
+	source_file.write_text("\n".join(source_file_contents))
+EOF
+
+""""
+" GenerateSoarSourceFile()
+"   Creates or modifies a soar source file in the current directory
+"   of the name dir_name_source.soar and will source all the current files and
+"   subdirectories
+
+function! GenerateSoarSourceFile()
+  let dir = GetCurrentExplorerDirectory()
+  execute ":Python generate_soar_source_file(\"".dir."\")"
+
+  " Refresh the file"
+  redraw!
+  call feedkeys("r")
+endfunction

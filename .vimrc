@@ -4,6 +4,16 @@ set term=xterm-256color
 
 syntax on
 
+" ######### ENABLE PYTHON ##############
+" Make sure python is installed (either python2 or python3)
+if has('python')
+	command! -nargs=1 Python python <args>
+elseif has('python3')
+	command! -nargs=1 Python python3 <args>
+else
+	echo 'Error: python not installed'
+endif
+
 " ######### VUNDLE ########
 "
 set nocompatible
@@ -16,7 +26,7 @@ Plugin 'VundleVim/Vundle.vim'
 
 Plugin 'christoomey/vim-tmux-navigator'
 
-Plugin 'file:///home/mininger/.vim/bundle/vim-soar-plugin'
+Plugin 'file:///home/aaron/.vim/bundle/vim-soar-plugin'
 
 call vundle#end()
 
