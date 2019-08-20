@@ -28,6 +28,8 @@ Plugin 'christoomey/vim-tmux-navigator'
 
 Plugin 'file:///home/aaron/.vim/bundle/vim-soar-plugin'
 
+Plugin 'suan/vim-instant-markdown'
+
 call vundle#end()
 
 filetype plugin indent on
