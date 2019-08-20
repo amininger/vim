@@ -26,7 +26,7 @@ Plugin 'VundleVim/Vundle.vim'
 
 Plugin 'christoomey/vim-tmux-navigator'
 
-Plugin 'file:///home/aaron/.vim/bundle/vim-soar-plugin'
+Plugin 'file://'.$HOME.'/.vim/bundle/vim-soar-plugin'
 
 Plugin 'suan/vim-instant-markdown'
 
