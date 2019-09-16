@@ -1,4 +1,4 @@
-nnoremap <C-E> :call OpenFileInTmuxPane()<CR>
+"nnoremap <C-E> :call OpenFileInTmuxPane()<CR>
 
 command FO call OpenFileInTmuxPane()
 command -nargs=1 FC call CreateFileInCurrentDirectory(<f-args>)

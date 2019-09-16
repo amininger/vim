@@ -26,13 +26,17 @@ Plugin 'VundleVim/Vundle.vim'
 
 Plugin 'christoomey/vim-tmux-navigator'
 
-Plugin 'file://'.$HOME.'/.vim/bundle/vim-soar-plugin'
+Plugin 'file://'.$HOME.'/.vim/bundle/vim-soar-debugger'
 
 Plugin 'suan/vim-instant-markdown'
+
+Plugin 'junegunn/fzf'
 
 call vundle#end()
 
 filetype plugin indent on
+
+let g:default_rosie_agent = $DEFAULT_ROSIE_AGENT
 
 " ####### END VUNDLE #######
 
@@ -61,9 +65,9 @@ set scrolloff=10
 "nnoremap <C-L> <C-W>l
 
 " Navigate between tabs
-nnoremap <C-B> :tabnew<Enter>
-nnoremap <C-N> :tabprev<Enter>
-nnoremap <C-M> :tabnext<Enter>
+nnoremap <C-B> :tabnew<CR>
+nnoremap <C-F> :tabprev<CR>
+nnoremap <C-N> :tabnext<CR>
 
 " Folding
 " default is all folds open (hack)
@@ -79,21 +83,11 @@ set hlsearch
 " Options to remap
 "CF - Full Page Down (OPTION)
 "H - Go to # lines from top (OPTION)
-"CI - Next Jump [jumplist] (OPTION)
 "L - go to # lines from bottom (OPTION)
 "M - Center Vertically (OPTION)
 "CQ - TERMINAL (OPTION) [pausing]
 "CS - TERMINAL (OPTION) [pausing]
 "U - undo line (OPTION)
-
-
-"nnoremap <C-F> :echo "STEP"<CR>
-"nnoremap LR :echo "LIST RULE"<CR>
-"nnoremap LWW :echo "LIST WME"<CR>
-"nnoremap LW2 :echo "LIST WME -d 2"<CR>
-"nnoremap LW3 :echo "LIST WME -d 3"<CR>
-"nnoremap LW4 :echo "LIST WME -d 4"<CR>
-"nnoremap LM :echo "LIST MATCHES"<CR>
 
 " ############### SCRIPTS #################
 
@@ -101,13 +95,14 @@ so $MY_VIM_DIR/scripts
 so $MY_VIM_DIR/netrw_extensions.vim
 
 " Mappings for scripting functions
+nnoremap <C-E> :FZF<CR>
 
 " Navigating through grep results 
 nnoremap <S-K> :call OpenPrevFileInWindow()<CR>
 nnoremap <S-J> :call OpenNextFileInWindow()<CR>
 
 " Custom file explorer navigation 
-nnoremap <C-E> :call OpenFileInTmuxPane()<CR>
+"nnoremap <C-E> :call OpenFileInTmuxPane()<CR>
 
 " Mappings for the vim debugger and rosie
 nnoremap M :call SendMessageToRosie()<CR>
