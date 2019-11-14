@@ -39,12 +39,15 @@ function! GetEditCommandForFile()
 
     " Must have at least 2 parts (for the line number)
 	if len(line_arr) < 2
-		return ""
+		let line_arr = split(getline('.'), ":")
+		if len(line_arr) < 2
+			return ""
+		endif
 	endif
 
     " Don't open a binary file
     let filename = line_arr[0]
-    if (filename =~ "Binary file")
+    if (filename =~ "|| Binary file")
         return ""
     endif
 

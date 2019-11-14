@@ -2,7 +2,6 @@
 # $MY_VIM_DIR
 
 export VIMRC="$MY_VIM_DIR/.vimrc"
-
 alias vim="vim -u $VIMRC"
 
 

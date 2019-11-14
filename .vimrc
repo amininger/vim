@@ -35,6 +35,7 @@ Plugin 'junegunn/fzf'
 call vundle#end()
 
 filetype plugin indent on
+au BufRead,BufNewFile *.md set filetype=markdown
 
 let g:default_rosie_agent = $DEFAULT_ROSIE_AGENT
 
