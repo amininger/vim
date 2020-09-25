@@ -74,6 +74,7 @@ endfunction
 "   and open that file in the panel above this one
 
 function! OpenPrevFileInWindow()
+	let g:instant_markdown_autostart = 0
 	wincmd j
 	execute "normal! k"
 	let editcmd=GetEditCommandForFile()
@@ -88,6 +89,7 @@ endfunction
 "   and open that file in the panel above this one
 
 function! OpenNextFileInWindow()
+	let g:instant_markdown_autostart = 0
 	wincmd j
 	execute "normal! j"
 	let editcmd=GetEditCommandForFile()
@@ -96,4 +98,25 @@ function! OpenNextFileInWindow()
 endfunction
 
 
+""""""""""""""""""" CUSTOM ROSIE EXTENSIONS
 
+function! LookupAction(action_handle)
+	Python agent.execute_command("smem --query {(<a> ^handle " + vim.eval("a:action_handle") + ")}")
+endfunction
+
+
+""""""""""""""""""" MANAGING WINDOWS """""""""""""""""""
+
+
+"""""
+" DevWindows()
+
+function! DevWindows()
+	split
+	wincmd j
+	resize 6
+	vsplit
+	terminal ++curwin
+	wincmd l
+	terminal ++curwin
+endfunction

@@ -26,20 +26,50 @@ Plugin 'VundleVim/Vundle.vim'
 
 Plugin 'christoomey/vim-tmux-navigator'
 
-Plugin 'file://'.$HOME.'/.vim/bundle/vim-soar-debugger'
+Plugin 'amininger/vim-soar-plugin'
 
 Plugin 'suan/vim-instant-markdown'
 
 Plugin 'junegunn/fzf'
+
+Plugin 'itchyny/lightline.vim'
+
+Plugin 'tpope/vim-surround'
+
+Plugin 'aserebryakov/vim-todo-lists'
 
 call vundle#end()
 
 filetype plugin indent on
 au BufRead,BufNewFile *.md set filetype=markdown
 
-let g:default_rosie_agent = $DEFAULT_ROSIE_AGENT
+"command! -nargs=0 NoMarkdown let g:instant_markdown_autostart = 0
 
+let g:default_rosie_agent = $DEFAULT_ROSIE_AGENT
+let g:root_agent_directory = $ROSIE_HOME."/agent"
+
+command! -nargs=0 EvalFindTest :call vim_soar_plugin#OpenRosieDebugger("mobilesim", $ROSIE_EVAL."/find-test/agent/rosie.find-test.config")
+command! -nargs=0 EvalRandMove :call vim_soar_plugin#OpenRosieDebugger("mobilesim", $ROSIE_EVAL."/rand-move/agent/rosie.rand-move.config")
+
+function! OpenTaskTestDebugger(test_name)
+	let config_file = $ROSIE_HOME."/test-agents/task-tests/".a:test_name."/agent/rosie.".a:test_name.".config"
+	call vim_soar_plugin#OpenRosieDebugger("internal", config_file)
+	Python agent.agent.ExecuteCommandLine("trace 1")
+endfunction
+command! -nargs=1 DebugTaskTest :call OpenTaskTestDebugger(<f-args>)
+
+function! OpenSubtaskDir(task_name)
+	let subtask_dir = $ROSIE_HOME."/agent/problem-space/action/task-implementations/op_".a:task_name
+	exec "tabnew ".subtask_dir
+endfunction
+command! -nargs=1 Subtask :call OpenSubtaskDir(<f-args>)
 " ####### END VUNDLE #######
+
+" ####### lightline ######
+
+set laststatus=2 " Forces status line on single page vim instances
+set noshowmode   " Redundant status is included with lightline, don't need the default
+
 
 " File navigation stuff
 let g:netrw_liststyle=3
