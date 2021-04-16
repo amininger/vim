@@ -9,8 +9,6 @@ command DDEL call DeleteDirUnderCursor()
 command GETDIR call GetCurrentExplorerDirectory()
 command GSF call GenerateSoarSourceFile()
 
-let g:netrw_liststyle=3
-let g:netrw_fastbrowse=0
 
 """"""""""""""""""" FILE EXPLORER """""""""""""""""""
 " These functions are used within the file explorer
