@@ -32,7 +32,10 @@ call vundle#begin()
 Plugin 'VundleVim/Vundle.vim'
 
 " vim-tmux-navgiator - allows seamless combination of tmux and vim panes
-Plugin 'christoomey/vim-tmux-navigator'
+"Plugin 'christoomey/vim-tmux-navigator'
+
+" vim-kitty-navigator - allows combination of kitty windows and vim panes
+Plugin 'knubie/vim-kitty-navigator'
 
 " vim-soar-plugin - soar editor and debugger plugin
 Plugin 'amininger/vim-soar-plugin'
@@ -43,6 +46,13 @@ Plugin 'suan/vim-instant-markdown'
 " fzf - integrates fzf into vim, quickly finding files through fuzzy search
 Plugin 'junegunn/fzf'
 
+" commentary - easily comment/uncomment lines
+Plugin 'tpope/vim-commentary'
+
+" vim-markdown - features for markdown files
+Plugin 'godlygeek/tabular'
+Plugin 'preservim/vim-markdown'
+
 " lightline - does a nice looking footer at the bottom of the window
 Plugin 'itchyny/lightline.vim'
 
@@ -52,7 +62,7 @@ Plugin 'itchyny/lightline.vim'
 Plugin 'tpope/vim-surround'
 
 " repeat - lets you repeat surroud commands
-Plugin 'tpope/repeat'
+"Plugin 'tpope/repeat'
 
 " vim-todo-list - plugin to allow creating/editing todo lists
 Plugin 'aserebryakov/vim-todo-lists'
@@ -94,6 +104,8 @@ set shiftwidth=4
 set smarttab
 set autoindent
 set backspace=indent,eol,start
+set number
+set relativenumber
 
 
 " ############ NAVIGATION ##############
