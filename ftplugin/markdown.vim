@@ -92,3 +92,6 @@ nnoremap ;d :call Marp_DeleteSlide()<CR>
 nnoremap ;a :call Marp_AppendSlide()<CR>
 nnoremap ;c :call Marp_DuplicateSlide()<CR>
 
+nnoremap ;m :call Latex_FormatMatrix()<CR>
+nnoremap ;v :call Latex_FormatVector()<CR>
+

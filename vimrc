@@ -3,6 +3,8 @@
 "
 let &runtimepath.=','.$MY_VIM_DIR
 
+command! -nargs=0 Reload :source $MY_VIM_DIR/vimrc
+
 " Turn on terminal colors
 set term=xterm-256color
 
@@ -90,7 +92,7 @@ set noshowmode   " Redundant status is included with lightline, don't need the d
 
 "set background=dark
 colorscheme onehalfdark
-let g:lightline = { 'colorscheme': 'onehalfdark' }
+"let g:lightline = { 'colorscheme': 'one' }
 
 command! -nargs=0 White :colorscheme tempus_totus
 command! -nargs=0 Light :colorscheme onehalflight
@@ -111,7 +113,7 @@ set relativenumber
 " ############ NAVIGATION ##############
 
 " newrw navigation settings
-"so $MY_VIM_DIR/netrw_extensions.vim
+"so $MY_VIM_DIR/scripts/netrw.vim
 let g:netrw_liststyle=3
 let g:netrw_fastbrowse=0
 
@@ -141,7 +143,7 @@ set hlsearch
 
 
 " ############### SCRIPTS + MAPPINGS #################
-so $MY_VIM_DIR/scripts
+so $MY_VIM_DIR/scripts/general.vim
 
 " Mappings for scripting functions
 nnoremap <C-E> :FZF<CR>
@@ -157,7 +159,7 @@ nnoremap <S-J> :call OpenNextFileInWindow()<CR>
 nnoremap M :call SendMessageToRosie()<CR>
 
 " ########## MARP SCRIPTS ###########
-so $MY_VIM_DIR/marp-scripts.vim
+so $MY_VIM_DIR/scripts/marp.vim
 
 command! -nargs=0 GoToPrevSlide :call Marp_GoToPrevSlide()
 command! -nargs=0 GoToNextSlide :call Marp_GoToNextSlide()
@@ -166,6 +168,13 @@ command! -nargs=0 CopySlide :call Marp_CopySlide()
 command! -nargs=0 DeleteSlide :call Marp_DeleteSlide()
 command! -nargs=0 AppendSlide :call Marp_AppendSlide()
 command! -nargs=0 DuplicateSlide :call Marp_DuplicateSlide()
+
+" ########## LATEX SCRIPTS ###########
+so $MY_VIM_DIR/scripts/latex.vim
+
+command! -nargs=0 Matrix :call Latex_FormatMatrix()
+command! -nargs=0 Vector :call Latex_FormatVector()
+
 
 " ########## ROSIE-SPECIFIC SETTINGS ##############
 
