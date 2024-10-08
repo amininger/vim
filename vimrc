@@ -1,9 +1,9 @@
 " My custom vim configuration settings
 " Assumes the environment variable $MY_VIM_DIR is set to this directory
 "
-let &runtimepath.=','.$MY_VIM_DIR
+"let &runtimepath.=','.$MY_VIM_DIR
 
-command! -nargs=0 Reload :source $MY_VIM_DIR/vimrc
+command! -nargs=0 Reload :source ~/.vimrc
 
 " Turn on terminal colors
 set term=xterm-256color
@@ -27,7 +27,7 @@ endif
 set nocompatible
 filetype off
 
-set rtp+=$MY_VIM_DIR/bundle/Vundle.vim
+set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
 
 " Vundle - plugin manager
@@ -69,6 +69,8 @@ Plugin 'tpope/vim-surround'
 " vim-todo-list - plugin to allow creating/editing todo lists
 Plugin 'aserebryakov/vim-todo-lists'
 Plugin 'agude/vim-eldar'
+
+"Plugin 'udalov/kotlin-vim'
 
 " Plugin 'NLKNguyen/papercolor-theme'
 
@@ -143,7 +145,7 @@ set hlsearch
 
 
 " ############### SCRIPTS + MAPPINGS #################
-so $MY_VIM_DIR/scripts/general.vim
+so ~/.vim/scripts/general.vim
 
 " Mappings for scripting functions
 nnoremap <C-E> :FZF<CR>
@@ -159,7 +161,7 @@ nnoremap <S-J> :call OpenNextFileInWindow()<CR>
 nnoremap M :call SendMessageToRosie()<CR>
 
 " ########## MARP SCRIPTS ###########
-so $MY_VIM_DIR/scripts/marp.vim
+so ~/.vim/scripts/marp.vim
 
 command! -nargs=0 GoToPrevSlide :call Marp_GoToPrevSlide()
 command! -nargs=0 GoToNextSlide :call Marp_GoToNextSlide()
@@ -170,7 +172,7 @@ command! -nargs=0 AppendSlide :call Marp_AppendSlide()
 command! -nargs=0 DuplicateSlide :call Marp_DuplicateSlide()
 
 " ########## LATEX SCRIPTS ###########
-so $MY_VIM_DIR/scripts/latex.vim
+so ~/.vim/scripts/latex.vim
 
 command! -nargs=0 Matrix :call Latex_FormatMatrix()
 command! -nargs=0 Vector :call Latex_FormatVector()
