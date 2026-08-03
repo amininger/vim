@@ -78,9 +78,25 @@ call vundle#end()
 
 filetype plugin indent on
 
+" Add ThorSoar Extensions
+set rtp+=~/.vim/bundle/thor-soar-extensions
+runtime plugin/thor-soar-extensions.vim
+
+
+
+" ######### MISC VIM SETTINGS ################
+
+" Stop :W from triggering a command (just write)
+cabbrev W w
+cabbrev Q q
+cabbrev WQ wq
+cabbrev Wq wq
+
 " ######### VIM-INSTANT-MARKDOWN SETTINGS ###########
 
 au BufRead,BufNewFile *.md set filetype=markdown
+
+au BufRead,BufNewFile CMakeLists.txt set filetype=cmake
 
 let g:instant_markdown_autostart = 0
 
@@ -158,7 +174,7 @@ nnoremap <S-J> :call OpenNextFileInWindow()<CR>
 "nnoremap <C-E> :call OpenFileInTmuxPane()<CR>
 
 " Mappings for the vim debugger and rosie
-nnoremap M :call SendMessageToRosie()<CR>
+nnoremap M :call SendMessageToAgent()<CR>
 
 " ########## MARP SCRIPTS ###########
 so ~/.vim/scripts/marp.vim
@@ -180,27 +196,33 @@ command! -nargs=0 Vector :call Latex_FormatVector()
 
 " ########## ROSIE-SPECIFIC SETTINGS ##############
 
-let g:default_rosie_agent = $DEFAULT_ROSIE_AGENT
-let g:root_agent_directory = $ROSIE_HOME."/agent"
+"command! -nargs=0 RunITLDebugger :call thor_soar_extensions#OpenThorSoarInternalDebugger("/home/aaron/workspace/cic/thor-soar/configs/itl-agent/internal-itl-agent.config")
+command! -nargs=0 RunITLDebugger :call thor_soar_extensions#OpenThorSoarDebugger("/home/aaron/workspace/cic/thor-soar/configs/itl-agent/itl-agent.config")
+command! -nargs=0 RunDevDebugger :call thor_soar_extensions#OpenThorSoarInternalDebugger("/home/aaron/workspace/cic/thor-soar/configs/aaron-dev/internal.config")
+command! -nargs=0 RunTSDebugger :call thor_soar_extensions#OpenThorSoarDebugger("/home/aaron/workspace/cic/thor-soar/configs/aaron-dev/aaron-dev.config")
+command! -nargs=0 RunSpoofTestDebugger :call thor_soar_extensions#OpenThorSoarInternalDebugger("/home/aaron/workspace/cic/thor-soar/configs/interactive-agent/llm-spoofed-agent.config")
 
-command! -nargs=0 FindTestEval :call vim_soar_plugin#OpenRosieDebugger("mobilesim", $ROSIE_EVAL."/find-test/agent/rosie.find-test.config")
-command! -nargs=0 RandMoveEval :call vim_soar_plugin#OpenRosieDebugger("mobilesim", $ROSIE_EVAL."/rand-move/agent/rosie.rand-move.config")
-command! -nargs=0 InteriorGuardEval :call vim_soar_plugin#OpenRosieDebugger("internal", $ROSIE_EVAL."/interior-guard/agent/rosie.interior-guard.config")
-command! -nargs=0 FormEval2 :call vim_soar_plugin#OpenRosieDebugger("internal", $ROSIE_EVAL."/formulations/agent/rosie.formulations.config")
-command! -nargs=0 Modifiers :call vim_soar_plugin#OpenRosieDebugger("internal", $ROSIE_EVAL."/modifiers/agent/rosie.modifiers.config")
-
-function! OpenTaskTestDebugger(test_name)
-	let config_file = $ROSIE_HOME."/test-agents/task-tests/".a:test_name."/agent/rosie-client.config"
-	call vim_soar_plugin#OpenRosieDebugger("internal", config_file)
-	Python agent.agent.ExecuteCommandLine("trace 1")
-endfunction
-command! -nargs=1 DebugTaskTest :call OpenTaskTestDebugger(<f-args>)
-command! -nargs=0 Maintenance :call OpenTaskTestDebugger("maintenance")
-command! -nargs=0 Conditionals :call OpenTaskTestDebugger("conditionals")
-
-function! OpenSubtaskDir(task_name)
-	let subtask_dir = $ROSIE_HOME."/agent/problem-space/action/task-implementations/op_".a:task_name
-	exec "tabnew ".subtask_dir
-endfunction
-command! -nargs=1 Subtask :call OpenSubtaskDir(<f-args>)
-
+"let g:default_rosie_agent = $DEFAULT_ROSIE_AGENT
+"let g:root_agent_directory = $ROSIE_HOME."/agent"
+"
+"command! -nargs=0 FindTestEval :call vim_soar_plugin#OpenRosieDebugger("mobilesim", $ROSIE_EVAL."/find-test/agent/rosie.find-test.config")
+"command! -nargs=0 RandMoveEval :call vim_soar_plugin#OpenRosieDebugger("mobilesim", $ROSIE_EVAL."/rand-move/agent/rosie.rand-move.config")
+"command! -nargs=0 InteriorGuardEval :call vim_soar_plugin#OpenRosieDebugger("internal", $ROSIE_EVAL."/interior-guard/agent/rosie.interior-guard.config")
+"command! -nargs=0 FormEval2 :call vim_soar_plugin#OpenRosieDebugger("internal", $ROSIE_EVAL."/formulations/agent/rosie.formulations.config")
+"command! -nargs=0 Modifiers :call vim_soar_plugin#OpenRosieDebugger("internal", $ROSIE_EVAL."/modifiers/agent/rosie.modifiers.config")
+"
+"function! OpenTaskTestDebugger(test_name)
+"	let config_file = $ROSIE_HOME."/test-agents/task-tests/".a:test_name."/agent/rosie-client.config"
+"	call vim_soar_plugin#OpenRosieDebugger("internal", config_file)
+"	Python agent.agent.ExecuteCommandLine("trace 1")
+"endfunction
+"command! -nargs=1 DebugTaskTest :call OpenTaskTestDebugger(<f-args>)
+"command! -nargs=0 Maintenance :call OpenTaskTestDebugger("maintenance")
+"command! -nargs=0 Conditionals :call OpenTaskTestDebugger("conditionals")
+"
+"function! OpenSubtaskDir(task_name)
+"	let subtask_dir = $ROSIE_HOME."/agent/problem-space/action/task-implementations/op_".a:task_name
+"	exec "tabnew ".subtask_dir
+"endfunction
+"command! -nargs=1 Subtask :call OpenSubtaskDir(<f-args>)
+"
